@@ -12,9 +12,11 @@ GEM
     fast-stemmer (1.0.2)
     ffi (1.17.0)
     hitimes (3.0.0)
+    io-event (1.7.4)
     json (2.8.2)
     kgio (2.11.4)
     mini_portile2 (2.8.6)
+    msgpack (1.7.5)
     mysql2 (0.5.6)
     nio4r (2.7.4)
     nokogiri (1.16.7)
@@ -64,9 +66,11 @@ DEPENDENCIES
   fast-stemmer
   ffi
   hitimes
+  io-event
   json
   kgio
   mini_portile2 (= 2.8.6)
+  msgpack
   mysql2
   nokogiri
   pg
