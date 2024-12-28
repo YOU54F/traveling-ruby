@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  PKG_DATE: 20241122
+  PKG_DATE: 20241228
 
 jobs:
   make-windows:
