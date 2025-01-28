@@ -1,9 +1,9 @@
 name: Windows
 on:
   push:
-    branches: [ main, ci_arm_runners ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, ci_arm_runners ]
+    branches: [ main ]
 
 env:
   PKG_DATE: 20241228

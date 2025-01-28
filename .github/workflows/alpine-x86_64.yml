@@ -2,7 +2,7 @@ name: Alpine Musl - x86_64 - build from dockerhub builder
 
 on:
   push:
-    branches: [ main, ci_arm_runners ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 

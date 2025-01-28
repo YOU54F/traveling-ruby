@@ -2,7 +2,7 @@ name: Alpine Musl - arm64 - build from dockerhub builder
 on:
   workflow_dispatch:
   push:
-    branches: [ main, ci_arm_runners ]
+    branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 
