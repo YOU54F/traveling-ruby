@@ -2,8 +2,8 @@ name: Linux - x86_64 - image builder
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [ main ]
+  push:
+    branches: [ main, ci_arm_runners ]
   # pull_request:
   #   branches: [ main ]
 
@@ -15,9 +15,9 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Set up Ruby"
-        uses: ruby/setup-ruby@v1.206.0
+        uses: ruby/setup-ruby@v1.214.0
         with:
             ruby-version: 3.3.6
       - name: build image

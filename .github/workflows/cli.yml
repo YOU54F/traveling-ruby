@@ -26,7 +26,7 @@ jobs:
           ruby --version
           which ruby
           brew uninstall ruby@3.0
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: ./cli.sh --ci -v ${{ matrix.ruby-version }}
         name: install via cli.sh
       - run: ruby --version
@@ -57,7 +57,7 @@ jobs:
           ruby --version || echo "ruby not found as expected"
           /home/linuxbrew/.linuxbrew/bin/brew --version
           sudo rm -rf /home/linuxbrew
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: ./cli.sh --ci -v ${{ matrix.ruby-version }}
         name: install via cli.sh
       - run: ruby --version
@@ -76,7 +76,7 @@ jobs:
   #     run:
   #       shell: ${{ matrix.shell }}
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - run: |
   #         "$HOME\.traveling-ruby\bin\" >> $env:GITHUB_PATH
   #       shell: powershell
