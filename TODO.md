@@ -4,7 +4,7 @@ Just some WIP notes to keep some track of testing progress
 
 ### Latest Ruby Versions
 
-- `3.3.6`
+- `3.3.7`
 - `3.2.6`
 - `3.1.6`
 - `3.0.7`

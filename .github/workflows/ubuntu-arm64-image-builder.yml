@@ -2,7 +2,7 @@ name: Linux - arm64 - image builder
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, ci_arm_runners ]
   # pull_request:
   #   branches: [ main ]
 
@@ -19,7 +19,7 @@ jobs:
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1.214.0
         with:
-            ruby-version: 3.3.6
+            ruby-version: 3.3.7
       - name: build image
         run: |
             cd linux

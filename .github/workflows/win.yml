@@ -1,7 +1,7 @@
 name: Windows
 on:
   push:
-    branches: [ main ]
+    branches: [ main, ci_arm_runners ]
   pull_request:
     branches: [ main ]
 
@@ -14,7 +14,8 @@ jobs:
       matrix:
         os: [windows-latest]
         arch: [x86_64, x86]
-        ruby-version: [3.1.6, 3.2.6, 3.3.6, 3.4.1]
+        # ruby-version: [3.1.6, 3.2.6, 3.3.7, 3.4.1]
+        ruby-version: [3.3.7]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
