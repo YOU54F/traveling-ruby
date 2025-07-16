@@ -97,6 +97,7 @@ GEMS_TO_TEST=(
 	)
 GEMS_TO_FAIL=(
 	"win32ole"
+	"win32-registry"
 	) 
 GEMS_TO_SKIP=(
 	"sinatra"

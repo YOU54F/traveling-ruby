@@ -10,7 +10,7 @@ env:
   PKG_DATE: 20250616
   PLATFORM: osx
   ARCHITECTURES: x86_64
-  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_16.2.0.app/Contents/Developer
 
 jobs:
   make-osx-x86_64:
@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: [macos-13]
         # ruby-version: [3.0.7] # Pre 3.1.0 builds with openssl 1.1.1
-        ruby-version: [3.2.7, 3.3.7, 3.4.5]
+        ruby-version: [3.2.7, 3.3.7, 3.4.4]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,6 +29,7 @@ jobs:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
       - name: build x86_64
         run: |
+          ls /Applications/Xcode*
           cd osx
           rake stash_conflicting_paths
           rake --trace

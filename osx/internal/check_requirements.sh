@@ -19,6 +19,8 @@ elif [[ "$XCODEPATH" == "/Applications/Xcode_16.0.app/Contents/Developer" ]]; th
   XCODEPATH="$XCODEPATH/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
 elif [[ "$XCODEPATH" == "/Applications/Xcode_16.1.app/Contents/Developer" ]]; then
   XCODEPATH="$XCODEPATH/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+elif [[ "$XCODEPATH" == "/Applications/Xcode_16.2.0.app/Contents/Developer" ]]; then
+  XCODEPATH="$XCODEPATH/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
 elif [[ "$XCODEPATH" == "/Applications/Xcode_16.app/Contents/Developer" ]]; then
   XCODEPATH="$XCODEPATH/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
 else
