@@ -172,6 +172,8 @@ echo
 header "Analyzing Ruby..."
 if [[ "$OS" =~ Windows ]]; then
 	export PATH="$OUTPUT_DIR/bin:$PATH"
+else
+	chmod +x $OUTPUT_DIR/bin/gem
 fi
 RUBY_COMPAT_VERSION=`grep '"ruby_version"' "$OUTPUT_DIR"/lib/ruby/*/*/rbconfig.rb | sed -E 's/.*=//; s/.*"(.*)".*/\1/'`
 RUBY_ARCH=`grep '"arch"' "$OUTPUT_DIR"/lib/ruby/*/*/rbconfig.rb | sed -E 's/.*=//; s/.*"(.*)".*/\1/'`
