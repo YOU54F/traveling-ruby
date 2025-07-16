@@ -415,7 +415,11 @@ find . -name '*.bundle'
 find . -name '*.dylib'
 (
 	set -o pipefail
-	find . -name '*.bundle' | xargs strip -S
+	if (( RUBY_MAJOR > 3 )) || (( RUBY_MAJOR == 3 && RUBY_MINOR >= 4 )); then
+		find . -name '*.bundle' ! -path '*dSYM*'| xargs strip -S
+	else
+		find . -name '*.bundle' | xargs strip -S
+	fi
 	find . -name '*.dylib' | xargs strip -S
 )
 [[ $? == 0 ]]
