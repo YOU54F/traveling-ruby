@@ -290,7 +290,7 @@ TOTAL_TOOLS=6
 TOTAL_LIBS=14
 CCACHE_VERSION=4.9
 # https://github.com/ccache/ccache/releases
-CMAKE_VERSION=3.28.1
+CMAKE_VERSION=3.31.8
 # https://github.com/Kitware/CMake/releases/
 PKG_CONFIG_VERSION=0.29.2
 # https://pkgconfig.freedesktop.org/releases/
@@ -319,7 +319,7 @@ LIBEDIT_DIR_VERSION=20230828-3.1
 GMP_VERSION=6.3.0
 GMP_DIR_VERSION=6.3.0
 # https://github.com/libffi/libffi/releases/
-LIBFFI_VERSION=3.4.4
+LIBFFI_VERSION=3.5.1
 # https://pyyaml.org/download/libyaml/
 LIBYAML_VERSION=0.2.5
 # https://www.sqlite.org/download.html
@@ -339,7 +339,7 @@ ICU_FILE_VERSION=74_1
 LIBSSH2_VERSION=1.11.0
 # http://xmlsoft.org/download
 LIBXML2_VERSION=2.9.14
-LIBXSLT_VERSION=1.1.34
+LIBXSLT_VERSION=1.1.43
 # http://xmlsoft.org/download
 export PATH="$RUNTIME_DIR/bin:$PATH"
 export LIBRARY_PATH="$RUNTIME_DIR/lib"
@@ -419,12 +419,18 @@ elif [[ ! -e "$RUNTIME_DIR/bin/pkg-config" ]] || $FORCE_PKG_CONFIG; then
 	echo "Entering $RUNTIME_DIR/pkg-config-$PKG_CONFIG_VERSION"
 	pushd pkg-config-$PKG_CONFIG_VERSION >/dev/null
 
+	export CPPFLAGS="-Wno-error=unused-command-line-argument -Wno-int-conversion"
+	export CXXFLAGS="-Wno-error=unused-command-line-argument -Wno-int-conversion"
+	export CFLAGS="-Wno-error=unused-command-line-argument -Wno-int-conversion"
 	run ./configure --prefix="$RUNTIME_DIR" --with-internal-glib --build=$DEPLOY_TARGET
 	run make -j$CONCURRENCY
 	run make install
 	echo "Entering $RUNTIME_DIR"
 	popd >/dev/null
 	run rm -rf pkg-config-$PKG_CONFIG_VERSION
+	export CPPFLAGS="-Wno-error=unused-command-line-argument"
+	export CXXFLAGS="-Wno-error=unused-command-line-argument"
+	export CFLAGS="-Wno-error=unused-command-line-argument"
 else
 	echo "Already installed."
 fi
@@ -968,11 +974,12 @@ if $SKIP_LIBXSLT; then
 	echo "Skipped."
 elif [[ ! -e "$RUNTIME_DIR/lib/libxslt.a" ]] || $FORCE_LIBXSLT; then
 	# FIXME: getting a "Certificate can't be trusted" error while using HTTPS protocol
-	download_and_extract libxslt-$LIBXSLT_VERSION.tar.gz \
-		http://xmlsoft.org/download/libxslt-$LIBXSLT_VERSION.tar.gz
-	echo "Entering $RUNTIME_DIR/libxslt-$LIBXSLT_VERSION"
-	pushd libxslt-$LIBXSLT_VERSION >/dev/null
+	download_and_extract libxslt-v$LIBXSLT_VERSION.tar.gz \
+		https://gitlab.gnome.org/GNOME/libxslt/-/archive/v$LIBXSLT_VERSION/libxslt-v$LIBXSLT_VERSION.tar.gz
+	echo "Entering $RUNTIME_DIR/libxslt-v$LIBXSLT_VERSION"
+	pushd libxslt-v$LIBXSLT_VERSION >/dev/null
 
+	run ./autogen.sh
 	run ./configure --prefix="$RUNTIME_DIR" --disable-shared --enable-static \
 		--without-python --without-debug --without-debugger \
 		--without-profiler --build=$DEPLOY_TARGET \
@@ -986,7 +993,7 @@ elif [[ ! -e "$RUNTIME_DIR/lib/libxslt.a" ]] || $FORCE_LIBXSLT; then
 
 	echo "Leaving source directory"
 	popd >/dev/null
-	run rm -rf libxslt-$LIBXSLT_VERSION
+	run rm -rf libxslt-v$LIBXSLT_VERSION
 	run lipo -info "$RUNTIME_DIR/lib/libxslt.a"
 else
 	echo "Already installed."
