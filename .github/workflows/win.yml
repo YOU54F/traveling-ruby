@@ -22,7 +22,7 @@ jobs:
       #   uses: styfle/cancel-workflow-action@0.11.0
       #   with:
       #     all_but_latest: true
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1.206.0
         with:
@@ -36,7 +36,7 @@ jobs:
           sh -c './package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz output/${{ matrix.ruby-version }}'
           sh -c 'ls'
       - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
           path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz

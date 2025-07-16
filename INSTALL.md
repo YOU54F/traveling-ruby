@@ -36,7 +36,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: test pact cli action
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: curl -fsSL https://raw.githubusercontent.com/you54f/traveling-ruby/main/cli.sh | sh -s -- --ci -v 2.6.10
       - run: ruby --version
 ```
@@ -57,7 +57,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: test pact cli action
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: you54f/traveling-ruby@main
       - run: ruby --version
 ```
