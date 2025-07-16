@@ -10,7 +10,7 @@ env:
   PKG_DATE: 20250616
   PLATFORM: osx
   ARCHITECTURES: x86_64
-  DEVELOPER_DIR: /Applications/Xcode_16.2.0.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
 
 jobs:
   make-osx-x86_64:
