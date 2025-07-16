@@ -24,7 +24,7 @@ jobs:
       #     all_but_latest: true
       - uses: actions/checkout@v4
       - name: "Set up Ruby"
-        uses: ruby/setup-ruby@v1.206.0
+        uses: ruby/setup-ruby@v1.246.0
         with:
           ruby-version: ${{ matrix.ruby-version }}
       - name: package ${{ matrix.arch }}
