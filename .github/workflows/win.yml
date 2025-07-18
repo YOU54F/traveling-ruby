@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  PKG_DATE: 20250616
+  PKG_DATE: 20250618
 
 jobs:
   make-windows:
@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [windows-latest]
         arch: [x86_64, x86]
-        ruby-version: [3.2.7, 3.3.7, 3.4.4]
+        ruby-version: [3.2.8, 3.3.8, 3.4.5]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:

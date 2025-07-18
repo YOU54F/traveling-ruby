@@ -121,6 +121,9 @@ EOF
 parse_options "$@"
 CACHE_DIR=`cd "$CACHE_DIR" && pwd`
 OUTPUT_DIR=`cd "$OUTPUT_DIR" && pwd`
+if [[ "$RUBY_VERSION" == "3.4.5" ]]; then
+	RELEASE_NUM=2
+fi
 
 
 ########
