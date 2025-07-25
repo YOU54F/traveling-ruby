@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: "Set up Ruby"
-        uses: ruby/setup-ruby@v1.246.0
+        uses: ruby/setup-ruby@v1.249.0
         with:
-            ruby-version: 3.3.8
+            ruby-version: 3.3.9
       - name: build image
         run: |
           cd linux

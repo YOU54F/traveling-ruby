@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [windows-latest]
         arch: [x86_64, x86]
-        ruby-version: [3.2.8, 3.3.8, 3.4.5]
+        ruby-version: [3.2.9, 3.3.9, 3.4.5]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -24,7 +24,7 @@ jobs:
       #     all_but_latest: true
       - uses: actions/checkout@v4
       - name: "Set up Ruby"
-        uses: ruby/setup-ruby@v1.246.0
+        uses: ruby/setup-ruby@v1.249.0
         with:
           ruby-version: ${{ matrix.ruby-version }}
       - name: package ${{ matrix.arch }}
