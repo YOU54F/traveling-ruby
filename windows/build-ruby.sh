@@ -130,6 +130,8 @@ fi
 
 if [[ "$ARCHITECTURE" = "x86_64" ]]; then
 	RUBY_FILE_ARCH=x64
+elif [[ "$ARCHITECTURE" = "arm64" ]]; then
+	RUBY_FILE_ARCH=arm
 else
 	RUBY_FILE_ARCH="$ARCHITECTURE"
 fi
