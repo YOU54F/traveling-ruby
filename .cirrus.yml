@@ -422,16 +422,14 @@ windows_packager_task:
   only_if: $CIRRUS_CHANGE_TITLE =~ 'ci\(packager-windows\).*' || $CIRRUS_CHANGE_TITLE =~ 'ci\(packager\).*' || $CIRRUS_CHANGE_TITLE =~ 'ci\(matrix\).*' || $CIRRUS_BRANCH =~ 'main'
   env:
     PLATFORM: windows
-    matrix:
-      - script: |
-        rake --trace
-        ARCHITECTURES=arm64 RUBY_VERSIONS=3.4.5 rake --trace
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
   windows_setup_script: |
     brew install sevenzip
   <<: *cirrus_cli_setup
-  package_script: cd $PLATFORM && rake
+  package_script: |
+    cd $PLATFORM && rake
+    ARCHITECTURES=arm64 RUBY_VERSIONS=3.4.5 rake --trace
   <<: *UPLOAD_TASK
   <<: *BINARY_ATRIFACTS
 
