@@ -8,7 +8,7 @@ on:
   #   branches: [ main ]
 
 env:
-  PKG_DATE: 20250618
+  PKG_DATE: 20250625
 
 jobs:
   make-alpine-arm64:
