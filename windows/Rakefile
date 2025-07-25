@@ -1,14 +1,8 @@
 VERSION       = File.read("../VERSION.txt").strip
 RUBY_VERSIONS = ENV['RUBY_VERSIONS'] ? [].push(ENV['RUBY_VERSIONS']) : File.read("../RUBY_VERSIONS.txt").strip.split(/\s+/)
-ARCHITECTURES = ENV['ARCHITECTURES'] ? [].push(ENV['ARCHITECTURES']) : ["x86_64","x86","arm64"]
-
-# arm64 only available in 3.4.x or later
-if RUBY_VERSIONS.any? { |v| v.split('.').first(2).join('.') != '3.4' }
-  ARCHITECTURES.delete('arm64')
-end
+ARCHITECTURES = ENV['ARCHITECTURES'] ? [].push(ENV['ARCHITECTURES']) : ["x86_64","x86"]
 
 task :default => :package
-
 
 desc "Create packages for all Ruby versions (#{RUBY_VERSIONS.join(' ')} and ARCHITECTURES (#{ARCHITECTURES.join(' ')})"
 task :package do

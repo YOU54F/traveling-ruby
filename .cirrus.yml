@@ -423,7 +423,9 @@ windows_packager_task:
   env:
     PLATFORM: windows
     matrix:
-      - script: rake --trace
+      - script: |
+      | rake --trace
+        ARCHITECTURES=arm64 RUBY_VERSIONS=3.4.5 rake --trace
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
   windows_setup_script: |
