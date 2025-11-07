@@ -14,7 +14,38 @@ jobs:
       matrix:
         os: [windows-latest]
         arch: [x86_64, x86]
-        ruby-version: [3.2.9, 3.3.9, 3.4.5]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      # - name: Cancel Previous Runs
+      #   uses: styfle/cancel-workflow-action@0.11.0
+      #   with:
+      #     all_but_latest: true
+      - uses: actions/checkout@v4
+      - name: "Set up Ruby"
+        uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: package ${{ matrix.arch }}
+        run: |
+          uname -m
+          cd windows
+          sh -c 'mkdir -p cache output/${{ matrix.ruby-version }}'
+          sh -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}'
+          sh -c './package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz output/${{ matrix.ruby-version }}'
+          sh -c 'ls'
+      - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows"
+        uses: actions/upload-artifact@v4
+        with:
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
+          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
+  make-windows-arm:
+    strategy:
+      matrix:
+        os: [windows-11-arm]
+        arch: [arm64]
+        ruby-version: [3.4.7]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:

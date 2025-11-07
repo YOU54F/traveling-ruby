@@ -16,13 +16,13 @@ jobs:
   make-osx-x86_64:
     strategy:
       matrix:
-        os: [macos-13]
+        os: [macos-15-intel]
         # ruby-version: [3.0.7] # Pre 3.1.0 builds with openssl 1.1.1
-        ruby-version: [3.2.9, 3.3.9, 3.4.5]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: download osx x86_64 runtime
         run: ./scripts/download-osx-runtime.sh
         env:

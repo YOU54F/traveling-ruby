@@ -4,13 +4,8 @@ Just some WIP notes to keep some track of testing progress
 
 ### Latest Ruby Versions
 
-- `3.4.x`
-  - ruby date gem bundle fails to strip correctly in osx
-    - introduced in psych 5.2.1+
-    - pinned psych to 5.2.0 to avoid date dep
-  - `3.4.5` not yet available for windows via rubyinstaller2
-    - when available, build/publish `3.4.5`
-- `3.3.9`
+- `3.4.7`
+- `3.3.10`
 - `3.2.9`
 - `3.1.6`
 - `3.0.7`

@@ -14,8 +14,8 @@ jobs:
   make-ubuntu-arm64:
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        ruby-version: [3.2.9, 3.3.9, 3.4.5]
+        os: [ubuntu-22.04-arm]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -26,7 +26,6 @@ jobs:
             ruby-version: ${{ matrix.ruby-version }}
       - name: package
         run: |
-            docker run --privileged --rm tonistiigi/binfmt --install all
             cd linux
             rake
             ls

@@ -751,7 +751,7 @@ else
 fi
 echo
 
-header "Compiling runtime libraries 8/$TOTAL_LIBS: liblzma..."
+header "Compiling runtime libraries 8/$TOTAL_LIBS: liblzma and xzcat..."
 if $SKIP_LIBLZMA; then
 	echo "Skipped."
 elif [[ ! -e "$RUNTIME_DIR/lib/liblzma.5.dylib" ]] || $FORCE_LIBLZMA; then
@@ -760,8 +760,8 @@ elif [[ ! -e "$RUNTIME_DIR/lib/liblzma.5.dylib" ]] || $FORCE_LIBLZMA; then
 	echo "Entering $RUNTIME_DIR/xz-$XZ_VERSION"
 	pushd xz-$XZ_VERSION >/dev/null
 
-	run ./configure --prefix="$RUNTIME_DIR" --disable-static --disable-xz \
-		--disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links \
+	run ./configure --prefix="$RUNTIME_DIR" --disable-static --disable-xzdec \
+		--disable-lzmadec --disable-lzmainfo --disable-lzma-links \
 		--disable-scripts --disable-doc --build=$DEPLOY_TARGET
 	run make -j$CONCURRENCY
 	run make install-strip
@@ -773,6 +773,14 @@ elif [[ ! -e "$RUNTIME_DIR/lib/liblzma.5.dylib" ]] || $FORCE_LIBLZMA; then
 	run install_name_tool -id "@rpath/liblzma.5.dylib" \
 		"$RUNTIME_DIR/lib/liblzma.5.dylib"
 	run file "$RUNTIME_DIR/lib/liblzma.5.dylib"
+	
+	# Verify xzcat was installed
+	if [[ -e "$RUNTIME_DIR/bin/xzcat" ]]; then
+		echo "xzcat tool successfully installed"
+		run file "$RUNTIME_DIR/bin/xzcat"
+	else
+		echo "Warning: xzcat tool was not installed"
+	fi
 else
 	echo "Already installed."
 fi

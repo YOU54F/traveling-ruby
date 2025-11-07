@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'json'
-gem 'ffi'
+gem 'ffi', force_ruby_platform: true
 gem 'yajl-ruby'
 gem 'rexml'
 gem 'bcrypt'
@@ -23,8 +23,11 @@ gem 'thin'
 gem 'unf_ext'
 gem 'unicorn', force_ruby_platform: true
 gem 'nokogiri', force_ruby_platform: true
-gem 'mini_portile2', '2.8.6'
+gem 'mini_portile2'
 gem 'mysql2', force_ruby_platform: true
 gem 'bigdecimal', force_ruby_platform: true
 gem 'stringio', force_ruby_platform: true
 gem 'psych', force_ruby_platform: true
+gem 'pact_broker'
+gem 'pact_broker-client'
+gem 'rails'

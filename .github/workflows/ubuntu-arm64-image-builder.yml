@@ -11,7 +11,7 @@ jobs:
   make-ubuntu-arm64-image:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04-arm]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -19,10 +19,9 @@ jobs:
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@master
         with:
-            ruby-version: 3.3.9
+            ruby-version: 3.3.10
       - name: build image
         run: |
-            docker run --privileged --rm tonistiigi/binfmt --install all
             cd linux
             ARCHITECTURES="arm64" rake image
             docker images
