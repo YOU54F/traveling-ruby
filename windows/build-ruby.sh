@@ -157,12 +157,12 @@ header "Extracting Ruby..."
 	echo "+ In $OUTPUT_DIR:"
 	cd "$OUTPUT_DIR"
 	echo "+ 7z x $CACHE_DIR/$RUBY_FILE"
-	if command -v 7z >/dev/null 2>&1; then
-		7z x "$CACHE_DIR/$RUBY_FILE" >/dev/null
-	else
-		echo "no 7z found, trying 7zz"
-		echo "tip: on mac brew install 7zip"
+	if command -v 7zz >/dev/null 2>&1; then
 		7zz x "$CACHE_DIR/$RUBY_FILE" >/dev/null
+	else
+		echo "no 7zz found, trying 7z"
+		echo "tip: on mac brew install 7zip"
+		7z x "$CACHE_DIR/$RUBY_FILE" >/dev/null
 	fi
 )
 if [[ $? != 0 ]]; then
