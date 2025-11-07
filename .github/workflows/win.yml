@@ -61,7 +61,9 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+          download-path: windows/
       - name: "Test binary"
+        working-directory: windows
         run: |
           mkdir output
           tar xzf traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz -C output
