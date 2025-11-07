@@ -63,6 +63,7 @@ jobs:
         run: |
           uname -m
           cd windows
+          brew install 7zip
           rake
           ls
         env:
