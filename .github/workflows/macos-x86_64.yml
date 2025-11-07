@@ -58,7 +58,7 @@ jobs:
           ls /Applications/Xcode*
           cd macos
           rake stash_conflicting_paths
-          ./setup-runtime.sh
+          rake runtime
           rake unstash_conflicting_paths
         env:
           DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer

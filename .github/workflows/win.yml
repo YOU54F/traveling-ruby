@@ -43,7 +43,7 @@ jobs:
   make-windows-arm:
     strategy:
       matrix:
-        os: [windows-11-arm]
+        os: [windows-11]
         arch: [arm64]
         ruby-version: [3.4.7]
       fail-fast: false

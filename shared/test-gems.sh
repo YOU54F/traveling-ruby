@@ -121,9 +121,7 @@ GEM_LIST=$("$BUILD_OUTPUT_DIR/bin/gem" list)
 echo "$GEM_LIST"
 echo "$GEM_LIST" >> "$BUILD_OUTPUT_DIR/test_report"
 # header "modifying gem names in $BUILD_OUTPUT_DIR for testing"
-# "$BUILD_OUTPUT_DIR/bin/gem" list | awk '{gsub(/io-/, "io/"); gsub(/net-/, "net/"); sub(/-ext/, ""); sub(/-ruby/, ""); print $1}' | grep -v -- "-ext"
-
-GEMS=($("$BUILD_OUTPUT_DIR/bin/gem" list | awk '{gsub(/io-/, "io/"); gsub(/net-/, "net/"); gsub(/pact-provider-verifier/, "pact/provider_verifier/cli/verify"); gsub(/pact_broker-client/, "pact_broker/client/tasks"); gsub(/pact-/, "pact/"); gsub(/faraday-/, "faraday/"); sub(/-ext/, ""); sub(/-ruby/, ""); sub(/english/, "English"); print $1}' | grep -v -- "-ext"))
+GEMS=($("$BUILD_OUTPUT_DIR/bin/gem" list | awk '{gsub(/io-/, "io/"); gsub(/net-/, "net/"); gsub(/term-ansicolor/, "term/ansicolor"); gsub(/yajl-ruby/, "yajl"); gsub(/railties/, "rails/railtie"); gsub(/semver2/, "semver"); gsub(/pact-provider-verifier/, "pact/provider_verifier/cli/verify"); gsub(/pact_broker-client/, "pact_broker/client/tasks"); gsub(/pact-/, "pact/"); gsub(/faraday-/, "faraday/"); gsub(/action_text-trix/, "action_text/trix"); gsub(/actioncable/, "action_cable"); gsub(/actionmailbox/, "action_mailbox"); gsub(/actionmailer/, "action_mailer"); gsub(/actionpack/, "action_pack"); gsub(/actiontext/, "action_text"); gsub(/actionview/, "action_view"); gsub(/activejob/, "active_job"); gsub(/activemodel/, "active_model"); gsub(/activerecord/, "active_record"); gsub(/activestorage/, "active_storage"); gsub(/activesupport/, "active_support"); gsub(/as-notifications/, "as/notifications"); gsub(/rack-session/, "rack/session"); gsub(/rack-test/, "rack/test"); gsub(/ruby-next-core/, "ruby-next/core"); gsub(/websocket-driver/, "websocket/driver"); gsub(/websocket-extensions/, "websocket/extensions"); sub(/-ext$/, ""); sub(/-ruby$/, ""); sub(/english/, "English"); print $1}' | grep -v -- "-ext"))
 if [ ${#GEMS[@]} -eq 0 ]; then
 	GEMS=("${GEMS_TO_TEST[@]}")
 else
@@ -141,6 +139,13 @@ for LIB in ${GEMS[@]}; do
 		continue
 	fi
 	if ! "$BUILD_OUTPUT_DIR/bin/ruby" -r$LIB -e true ; then
+		if [[ "$LIB" == "action_text/trix" || "$LIB" == "rails/railtie" ]]; then
+			echo "Testing $LIB with active_support/all required first"
+			if "$BUILD_OUTPUT_DIR/bin/ruby" -rrails -ractive_support -r$LIB -e true ; then
+				success "Gem $LIB OK!"
+				continue
+			fi
+		fi
 		if [[ ! " ${GEMS_TO_FAIL[@]} " =~ " ${LIB} " ]]; then # Check if the current gem is not in the GEMS_TO_FAIL array
 			ERRORS+=("$LIB")
 		else # If the current gem is in the GEMS_TO_FAIL array, then it's OK

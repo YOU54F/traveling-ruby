@@ -31,3 +31,4 @@ gem 'psych', force_ruby_platform: true
 gem 'pact_broker'
 gem 'pact_broker-client'
 gem 'rails'
+gem 'webrick'
