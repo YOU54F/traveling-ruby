@@ -34,13 +34,13 @@ jobs:
           cd windows
           sh -c 'mkdir -p cache output/${{ matrix.ruby-version }}'
           sh -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}'
-          sh -c './package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz output/${{ matrix.ruby-version }}'
+          sh -c './package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}'
           sh -c 'ls'
-      - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows"
+      - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}"
         uses: actions/upload-artifact@v5
         with:
-          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
-          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
   make-windows-arm:
     strategy:
       matrix:
@@ -69,8 +69,8 @@ jobs:
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
-      - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows"
+      - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}"
         uses: actions/upload-artifact@v5
         with:
-          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
-          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
