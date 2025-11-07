@@ -15,7 +15,7 @@ on:
 
 env:
   PKG_DATE: 20251107
-  PLATFORM: osx
+  PLATFORM: macos
   ARCHITECTURES: x86_64
   DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
 
@@ -31,13 +31,13 @@ jobs:
         id: cache-key
         run: |
           # Create cache key based on relevant files and inputs
-          HASH=$(find osx/setup-runtime.sh osx/internal/ -type f -exec shasum {} \; | shasum | cut -d' ' -f1)
+          HASH=$(find macos/setup-runtime.sh macos/internal/ -type f -exec shasum {} \; | shasum | cut -d' ' -f1)
           CLEAR_CACHE="${{ github.event.inputs.clear_cache }}"
           if [ "$CLEAR_CACHE" = "true" ]; then
             HASH="${HASH}-cleared-$(date +%s)"
           fi
-          echo "key=osx-x86_64-runtime-${HASH}" >> $GITHUB_OUTPUT
-          echo "Runtime cache key: osx-x86_64-runtime-${HASH}"
+          echo "key=macos-x86_64-runtime-${HASH}" >> $GITHUB_OUTPUT
+          echo "Runtime cache key: macos-x86_64-runtime-${HASH}"
       
       - name: Clear cache if requested
         if: github.event.inputs.clear_cache == 'true'
@@ -48,7 +48,7 @@ jobs:
         id: cache-runtime
         uses: actions/cache@v4
         with:
-          path: osx/runtime/
+          path: macos/runtime/
           key: ${{ steps.cache-key.outputs.key }}
       
       - name: Build runtime
@@ -56,7 +56,7 @@ jobs:
         run: |
           echo "Building new runtime..."
           ls /Applications/Xcode*
-          cd osx
+          cd macos
           rake stash_conflicting_paths
           ./setup-runtime.sh
           rake unstash_conflicting_paths
@@ -66,9 +66,9 @@ jobs:
       - name: Verify runtime
         run: |
           echo "Verifying runtime exists..."
-          ls -la osx/runtime/ || echo "Runtime directory not found"
+          ls -la macos/runtime/ || echo "Runtime directory not found"
 
-  make-osx-x86_64:
+  make-macos-x86_64:
     needs: package-runtime
     strategy:
       matrix:
@@ -83,44 +83,44 @@ jobs:
       - name: Restore runtime cache
         uses: actions/cache@v4
         with:
-          path: osx/runtime/
+          path: macos/runtime/
           key: ${{ needs.package-runtime.outputs.cache-key }}
           fail-on-cache-miss: true
       
-      # - name: download osx x86_64 runtime
-      #   run: ./scripts/download-osx-runtime.sh
+      # - name: download macos x86_64 runtime
+      #   run: ./scripts/download-macos-runtime.sh
       #   env:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
 
       - name: build x86_64
         run: |
           ls /Applications/Xcode*
-          cd osx
+          cd macos
           rake stash_conflicting_paths
           rake --trace
           rake unstash_conflicting_paths
           ls
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
-      # - name: package osx x86_64 runtime
-      #   run: ./scripts/package-osx-runtime.sh
+      # - name: package macos x86_64 runtime
+      #   run: ./scripts/package-macos-runtime.sh
       #   env:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
-      # - name: 'Upload Runtime - osx x86_64'
+      # - name: 'Upload Runtime - macos x86_64'
       #   uses: actions/upload-artifact@v5
       #   with:
-      #     name: osx-runtime-x86_64-gha-openssl_1_1.tar.gz
-      #     path: osx/osx-runtime-*.tar.gz
+      #     name: macos-runtime-x86_64-gha-openssl_1_1.tar.gz
+      #     path: macos/macos-runtime-*.tar.gz
       - name: package gems
         run: ./scripts/package-gems.sh
-      - name: "Upload Artifact- osx x86_64"
+      - name: "Upload Artifact- macos x86_64"
         uses: actions/upload-artifact@v5
         with:
-          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-osx-x86_64.tar.gz
-          path: osx/traveling-ruby*.tar.gz
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-macos-x86_64.tar.gz
+          path: macos/traveling-ruby*.tar.gz
       - name: test
         run: |
-          cd osx
+          cd macos
           rake test
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}

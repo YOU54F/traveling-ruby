@@ -286,8 +286,8 @@ cirrus_cli_setup: &cirrus_cli_setup
     echo "chmoddiing script files due to lack of file perms in cirrus-cli"
     find $PLATFORM shared -name '*.sh'
     find $PLATFORM shared -name '*.sh' -exec chmod +x {} \;
-    chmod +x osx/internal/bin/c++
-    chmod +x osx/internal/bin/cc
+    chmod +x macos/internal/bin/c++
+    chmod +x macos/internal/bin/cc
     ls $PLATFORM
 
 download_macos_runtime: &download_macos_runtime
@@ -296,7 +296,7 @@ download_macos_runtime: &download_macos_runtime
     curl -L -o $PLATFORM/runtime.tar.gz https://github.com/YOU54F/traveling-ruby/releases/download/rel-20240116/osx-runtime-$ARCHITECTURES.tar.gz
     echo "unpacking pre-packaged runtime"
     mkdir -p $PLATFORM/runtime
-    [[ -f "$PLATFORM/runtime.tar.gz" ]] && cd $PLATFORM && tar -xzf ../$PLATFORM/runtime.tar.gz && rm -rf ../$PLATFORM/runtime.tar.gz && echo "unpacked osx-runtime-$ARCHITECTURES.tar.gz" && ls -al ../$PLATFORM/runtime
+    [[ -f "$PLATFORM/runtime.tar.gz" ]] && cd $PLATFORM && tar -xzf ../$PLATFORM/runtime.tar.gz && rm -rf ../$PLATFORM/runtime.tar.gz && echo "unpacked macos-runtime-$ARCHITECTURES.tar.gz" && ls -al ../$PLATFORM/runtime
     cd ..
     ls $PLATFORM
 
@@ -323,7 +323,7 @@ set_bundler_version: &set_bundler_version
 macos_check_task: 
   only_if: $CIRRUS_CHANGE_TITLE =~ 'ci\(mac-check\).*'
   env:
-    PLATFORM: osx
+    PLATFORM: macos
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
   <<: *macos_check
@@ -349,7 +349,7 @@ macos_stash_conflicting_paths: &macos_stash_conflicting_paths
 macos_packager_task: 
   only_if: $CIRRUS_CHANGE_TITLE =~ 'ci\(packager-macos\).*' || $CIRRUS_CHANGE_TITLE =~ 'ci\(packager\).*'
   env:
-    PLATFORM: osx
+    PLATFORM: macos
     USE_HOMEBREW_RUBY: 1
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
@@ -379,7 +379,7 @@ macos_arm64_matrix_task:
     # image: ghcr.io/cirruslabs/macos-ventura-vanilla:latest
     image: ghcr.io/cirruslabs/macos-sonoma-base:latest
   env:
-    PLATFORM: osx
+    PLATFORM: macos
     ARCHITECTURES: arm64
     matrix:
       *RUBY_VERSIONS_MATRIX_MACOS
@@ -399,7 +399,7 @@ macos_x86_64_matrix_task:
     # image: traveling-ruby-builder
     image: ghcr.io/cirruslabs/macos-sonoma-base:latest
   env:
-    PLATFORM: osx
+    PLATFORM: macos
     ARCHITECTURES: x86_64
     # $USE_ROSETTA: arch -m x86_64
     matrix:

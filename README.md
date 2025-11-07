@@ -8,8 +8,8 @@ Traveling Ruby is a project which supplies self-contained, "portable" Ruby binar
 
 | OS     | Ruby      | Architecture | Supported |
 | -------| ------- | ------------ | --------- |
-| OSX    | 3.2.9     | x86_64       | ✅         |
-| OSX    | 3.2.9     | arm64| ✅         |
+| MacOS    | 3.2.9     | x86_64       | ✅         |
+| MacOS    | 3.2.9     | arm64| ✅         |
 | Linux  | 3.2.9   | x86_64       | ✅         |
 | Linux  | 3.2.9   | arm64 | ✅         |
 | Windows| 3.2.9 | x86_64       | ✅         |
@@ -115,7 +115,7 @@ The Traveling Ruby project supplies binaries that application developers can use
 
 For the Linux build system, see [linux/README.md](linux/README.md).
 
-For the macOS build system, see [osx/README.md](osx/README.md).
+For the macOS build system, see [macos/README.md](macos/README.md).
 
 ## Future work
 

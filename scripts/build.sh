@@ -8,7 +8,7 @@ rm VERSION.txt
 echo $TRAVELING_RUBY_PKG_DATE > VERSION.txt
 case "$PLATFORM" in
     "Darwin")
-        export PLATFORM="osx"
+        export PLATFORM="macos"
         ;;
     "Linux")
         export PLATFORM="linux"
@@ -20,7 +20,7 @@ esac
 mkdir -p build
 cd $PLATFORM
 
-if [[ ("$PLATFORM" == "osx") && "$USE_ROSETTA" == "true" ]]; then
+if [[ ("$PLATFORM" == "macos") && "$USE_ROSETTA" == "true" ]]; then
     softwareupdate --install-rosetta --agree-to-license
     rbenv local system
     sudo gem install bundler:2.5.18
@@ -28,7 +28,7 @@ if [[ ("$PLATFORM" == "osx") && "$USE_ROSETTA" == "true" ]]; then
     rake stash_conflicting_paths
     arch -x86_64 rake --trace
     rake unstash_conflicting_paths
-elif [[ "$PLATFORM" == "osx" ]]; then
+elif [[ "$PLATFORM" == "macos" ]]; then
     rbenv local system
     sudo gem install bundler:2.5.18
     rbenv global ${RB_VERSION}

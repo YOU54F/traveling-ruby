@@ -2,11 +2,11 @@
 set -e
 
 # This script lists the available versions of Traveling Ruby builds for different operating systems.
-# Usage: ./list-versions.sh [all|windows|linux|osx] [unpack]
+# Usage: ./list-versions.sh [all|windows|linux|macos] [unpack]
 # - all: lists all available builds for all operating systems.
 # - windows: lists all available builds for Windows.
 # - linux: lists all available builds for Linux.
-# - osx: lists all available builds for macOS.
+# - macos: lists all available builds for macOS.
 # - unpack: if specified as the second argument, unpacks the selected build(s) to the output directory.
 
 SELFDIR=`dirname "$0"`
@@ -42,20 +42,20 @@ list_output_builds() {
 # Check the first argument to determine which operating system to list builds for.
 # If no argument is provided, exit with an error message.
 if [[ ${1:-} == "all" ]]; then
-  cd $SELFDIR/../osx
+  cd $SELFDIR/../macos
   list_output_builds "" $2
   cd $SELFDIR/../windows
   list_output_builds "" $2
   cd $SELFDIR/../linux
   list_output_builds "" $2
 elif [[ ${1:-} != "" ]]; then
-  if [[ "$1" != "windows" && "$1" != "linux" && "$1" != "osx" ]]; then
-    echo "Invalid argument: $1. Please enter 'windows', 'linux', or 'osx'."
+  if [[ "$1" != "windows" && "$1" != "linux" && "$1" != "macos" ]]; then
+    echo "Invalid argument: $1. Please enter 'windows', 'linux', or 'macos'."
     exit 1
   fi
   cd $SELFDIR/../$1
   list_output_builds "" $2
 else
-  echo "Usage: ./list-versions.sh [all|windows|linux|osx] [unpack]"
+  echo "Usage: ./list-versions.sh [all|windows|linux|macos] [unpack]"
   exit 1
 fi

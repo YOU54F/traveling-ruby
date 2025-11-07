@@ -105,11 +105,11 @@ case $(uname -sm) in
   TRAVELING_RUBY_ARCH=arm64
   ;;
 'Darwin arm64')
-  TRAVELING_RUBY_OS=osx
+  TRAVELING_RUBY_OS=macos
   TRAVELING_RUBY_ARCH=arm64
   ;;
 'Darwin x86_64')
-  TRAVELING_RUBY_OS=osx
+  TRAVELING_RUBY_OS=macos
   TRAVELING_RUBY_ARCH=x86_64
   ;;
 "Windows"* | "MINGW64"*)

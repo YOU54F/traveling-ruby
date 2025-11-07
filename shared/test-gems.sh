@@ -54,12 +54,12 @@ function parse_options()
 	if [[ "$PLATFORM" = "" ]]; then
 		PLATFORM=$(uname | tr '[:upper:]' '[:lower:]')
 		if [[ "$PLATFORM" = "darwin" ]]; then
-			PLATFORM="osx"
+			PLATFORM="macos"
 		fi
 	fi
 
-	if [[ "$PLATFORM" != "" && "$PLATFORM" != "osx" && "$PLATFORM" != "windows" && "$PLATFORM" != "linux" ]]; then
-		echo "ERROR: Invalid platform specified. Must be 'osx', 'windows', or 'linux'."
+	if [[ "$PLATFORM" != "" && "$PLATFORM" != "macos" && "$PLATFORM" != "windows" && "$PLATFORM" != "linux" ]]; then
+		echo "ERROR: Invalid platform specified. Must be 'macos', 'windows', or 'linux'."
 		exit 1
 	fi
 

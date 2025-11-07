@@ -4,11 +4,11 @@
 /alpine/runtime
 /alpine/output
 /alpine/traveling-ruby-gems*
-/osx/traveling-ruby-gems*
+/macos/traveling-ruby-gems*
 /windows/traveling-ruby-gems*
-/osx/runtime*
-/osx/output
-/osx/work
+/macos/runtime*
+/macos/output
+/macos/work
 /windows/cache
 /windows/output
 *.sublime-workspace

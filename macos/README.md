@@ -6,12 +6,12 @@ See the "System requirements" section.
 
 To build binary packages for `arm64`, run:
 
-    cd osx
+    cd macos
     ARCHITECTURES=arm64 rake
 
 To build binary packages for `x86_64`, run:
 
-    cd osx
+    cd macos
     ARCHITECTURES=x86_64 rake
 
 You can view all tasks by running `rake -T`.
