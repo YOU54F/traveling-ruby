@@ -22,7 +22,7 @@ jobs:
           /home/linuxbrew/.linuxbrew/bin/brew --version
           sudo rm -rf /home/linuxbrew
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - id: traveling-ruby-action
         uses: you54f/traveling-ruby@main
@@ -62,7 +62,7 @@ jobs:
     runs-on: windows-latest
     name: test traveling-ruby action
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: traveling-ruby-action
         uses: you54f/traveling-ruby@main
 
