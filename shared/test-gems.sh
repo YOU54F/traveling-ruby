@@ -80,30 +80,40 @@ function parse_options()
 
 parse_options "$@"
 
+# Set executable suffix for Windows
+if [[ "$PLATFORM" = "windows" ]]; then
+	EXE_SUFFIX=".bat"
+else
+	EXE_SUFFIX=""
+fi
 
 ##########
 
 GEMS_TO_TEST=(
-	rexml 
-	nio 
-	socket 
-	rinda/ring 
-	rinda/tuplespace
-	openssl readline rugged charlock_holmes unf_ext bcrypt RedCloth
-	eventmachine escape_utils json nokogiri ffi pg
-	thin sqlite3 yajl puma/puma_http11 kgio raindrops fast-stemmer
-	hitimes redcarpet curses
-	mysql2
+	# rexml 
+	# nio 
+	# socket 
+	# rinda/ring 
+	# rinda/tuplespace
+	# openssl readline rugged charlock_holmes unf_ext bcrypt RedCloth
+	# eventmachine escape_utils json nokogiri ffi pg
+	# thin sqlite3 yajl puma/puma_http11 kgio raindrops fast-stemmer
+	# hitimes redcarpet curses
+	# mysql2
 	)
 GEMS_TO_FAIL=(
-	"win32ole"
-	"win32-registry"
-	) 
+	)
+if [[ "$PLATFORM" != "windows" ]]; then
+	GEMS_TO_FAIL+=(
+		"win32ole"
+		"win32/registry"
+	)
+fi
 GEMS_TO_SKIP=(
-	"sinatra"
-	"nio4r" 
-	test-unit 
-	"rinda"
+	# "sinatra"
+	# "nio4r" 
+	# test-unit 
+	# "rinda"
 )
 
 if [[ "$BUILD_OUTPUT_DIR" == *"3.0."* ]]; then
@@ -117,11 +127,11 @@ echo "Gems to test: ${GEMS_TO_TEST[@]}"
 echo "Gems to fail: ${GEMS_TO_FAIL[@]}"
 
 header "Listing gems versions in $BUILD_OUTPUT_DIR"
-GEM_LIST=$("$BUILD_OUTPUT_DIR/bin/gem" list)
+GEM_LIST=$("$BUILD_OUTPUT_DIR/bin/gem$EXE_SUFFIX" list)
 echo "$GEM_LIST"
 echo "$GEM_LIST" >> "$BUILD_OUTPUT_DIR/test_report"
 # header "modifying gem names in $BUILD_OUTPUT_DIR for testing"
-GEMS=($("$BUILD_OUTPUT_DIR/bin/gem" list | awk '{gsub(/io-/, "io/"); gsub(/net-/, "net/"); gsub(/term-ansicolor/, "term/ansicolor"); gsub(/yajl-ruby/, "yajl"); gsub(/railties/, "rails/railtie"); gsub(/semver2/, "semver"); gsub(/pact-provider-verifier/, "pact/provider_verifier/cli/verify"); gsub(/pact_broker-client/, "pact_broker/client/tasks"); gsub(/pact-/, "pact/"); gsub(/faraday-/, "faraday/"); gsub(/action_text-trix/, "action_text/trix"); gsub(/actioncable/, "action_cable"); gsub(/actionmailbox/, "action_mailbox"); gsub(/actionmailer/, "action_mailer"); gsub(/actionpack/, "action_pack"); gsub(/actiontext/, "action_text"); gsub(/actionview/, "action_view"); gsub(/activejob/, "active_job"); gsub(/activemodel/, "active_model"); gsub(/activerecord/, "active_record"); gsub(/activestorage/, "active_storage"); gsub(/activesupport/, "active_support"); gsub(/as-notifications/, "as/notifications"); gsub(/rack-session/, "rack/session"); gsub(/rack-test/, "rack/test"); gsub(/ruby-next-core/, "ruby-next/core"); gsub(/websocket-driver/, "websocket/driver"); gsub(/websocket-extensions/, "websocket/extensions"); sub(/-ext$/, ""); sub(/-ruby$/, ""); sub(/english/, "English"); print $1}' | grep -v -- "-ext"))
+GEMS=($("$BUILD_OUTPUT_DIR/bin/gem$EXE_SUFFIX" list | awk '{gsub(/win32-registry/, "win32/registry"); gsub(/io-/, "io/"); gsub(/net-/, "net/"); gsub(/term-ansicolor/, "term/ansicolor"); gsub(/yajl-ruby/, "yajl"); gsub(/railties/, "rails/railtie"); gsub(/semver2/, "semver"); gsub(/pact-provider-verifier/, "pact/provider_verifier/cli/verify"); gsub(/pact_broker-client/, "pact_broker/client/tasks"); gsub(/pact-/, "pact/"); gsub(/faraday-/, "faraday/"); gsub(/action_text-trix/, "action_text/trix"); gsub(/actioncable/, "action_cable"); gsub(/actionmailbox/, "action_mailbox"); gsub(/actionmailer/, "action_mailer"); gsub(/actionpack/, "action_pack"); gsub(/actiontext/, "action_text"); gsub(/actionview/, "action_view"); gsub(/activejob/, "active_job"); gsub(/activemodel/, "active_model"); gsub(/activerecord/, "active_record"); gsub(/activestorage/, "active_storage"); gsub(/activesupport/, "active_support"); gsub(/as-notifications/, "as/notifications"); gsub(/rack-session/, "rack/session"); gsub(/rack-test/, "rack/test"); gsub(/ruby-next-core/, "ruby-next/core"); gsub(/websocket-driver/, "websocket/driver"); gsub(/websocket-extensions/, "websocket/extensions"); sub(/-ext$/, ""); sub(/-ruby$/, ""); sub(/english/, "English"); print $1}' | grep -v -- "-ext"))
 if [ ${#GEMS[@]} -eq 0 ]; then
 	GEMS=("${GEMS_TO_TEST[@]}")
 else
@@ -138,10 +148,10 @@ for LIB in ${GEMS[@]}; do
 		warning "Skipping gem $LIB"
 		continue
 	fi
-	if ! "$BUILD_OUTPUT_DIR/bin/ruby" -r$LIB -e true ; then
+	if ! "$BUILD_OUTPUT_DIR/bin/ruby$EXE_SUFFIX" -r$LIB -e true ; then
 		if [[ "$LIB" == "action_text/trix" || "$LIB" == "rails/railtie" ]]; then
 			echo "Testing $LIB with active_support/all required first"
-			if "$BUILD_OUTPUT_DIR/bin/ruby" -rrails -ractive_support -r$LIB -e true ; then
+			if "$BUILD_OUTPUT_DIR/bin/ruby$EXE_SUFFIX" -rrails -ractive_support -r$LIB -e true ; then
 				success "Gem $LIB OK!"
 				continue
 			fi
@@ -155,7 +165,7 @@ for LIB in ${GEMS[@]}; do
 		success "Gem $LIB OK!"
 		if [[ "$LIB" == "pact/ffi" ]]; then
 		echo "Testing pact-ffi gem loads shared library (via ffi gem)"
-		"$BUILD_OUTPUT_DIR/bin/ruby" -r$LIB -e "puts PactFfi.pactffi_version"
+		"$BUILD_OUTPUT_DIR/bin/ruby$EXE_SUFFIX" -r$LIB -e "puts PactFfi.pactffi_version"
 		fi
 	fi
 done
