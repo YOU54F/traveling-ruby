@@ -61,7 +61,7 @@ jobs:
           rake runtime
           rake unstash_conflicting_paths
         env:
-          DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+          DEVELOPER_DIR: /Applications/Xcode_16.0.app/Contents/Developer
       
       - name: Verify runtime
         run: |
