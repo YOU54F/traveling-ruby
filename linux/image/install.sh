@@ -16,6 +16,16 @@ ARCHITECTURE_BITS=64
 ### Install base software
 
 echo "$ARCHITECTURE" >/ARCHITECTURE
+# https://serverfault.com/questions/1161816/mirrorlist-centos-org-no-longer-resolve
+# https://vault.centos.org/altarch/
+sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo
+sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo
+sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
+
+if [[ $ARCHITECTURE == "arm64" ]]; then
+	sed -i 's|baseurl=http://vault.centos.org/centos/7/os/$basearch/|baseurl=https://vault.centos.org/altarch/7/sclo/aarch64/|g' /etc/yum.repos.d/*.repo
+	find /etc/yum.repos.d/ -type f -exec sed -i 's|centos/7|altarch/7|g' {} +
+fi
 run yum install -y wget sudo readline-devel ncurses-devel s3cmd
 # run yum install -y wget sudo readline-devel ncurses-devel s3cmd libyaml-devel libffi-devel
 run mkdir -p /ccache

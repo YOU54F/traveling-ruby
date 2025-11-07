@@ -1,7 +1,8 @@
 name: Windows
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+  # push:
+  #   branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -43,7 +44,7 @@ jobs:
   make-windows-arm:
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [macos-latest]
         arch: [arm64]
         ruby-version: [3.4.7]
       fail-fast: false
@@ -62,10 +63,11 @@ jobs:
         run: |
           uname -m
           cd windows
-          sh -c 'mkdir -p cache output/${{ matrix.ruby-version }}'
-          sh -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}'
-          sh -c './package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows.tar.gz output/${{ matrix.ruby-version }}'
-          sh -c 'ls'
+          rake
+          ls
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
+          ARCHITECTURES: ${{ matrix.arch }}
       - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows"
         uses: actions/upload-artifact@v5
         with:

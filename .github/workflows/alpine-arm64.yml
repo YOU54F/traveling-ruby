@@ -2,8 +2,8 @@ name: Alpine Musl - arm64 - build from dockerhub builder
 # Broken on GitHub Actions with QEMU
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, alpine ]
+  # push:
+  #   branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 

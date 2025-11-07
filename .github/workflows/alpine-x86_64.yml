@@ -1,8 +1,9 @@
 name: Alpine Musl - x86_64 - build from dockerhub builder
 
 on:
-  push:
-    branches: [ main, alpine ]
+  workflow_dispatch:
+  # push:
+  #   branches: [ main ]
   pull_request:
     branches: [ main ]
 
