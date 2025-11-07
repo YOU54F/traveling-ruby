@@ -10,50 +10,17 @@ env:
   PKG_DATE: 20251107
 
 jobs:
-  make-windows:
+  build-windows:
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [windows-latest]
         arch: [x86_64, x86]
         ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        include:
+          - arch: arm64
+            ruby-version: 3.4.7
       fail-fast: false
-    runs-on: ${{ matrix.os }}
     steps:
-      # - name: Cancel Previous Runs
-      #   uses: styfle/cancel-workflow-action@0.11.0
-      #   with:
-      #     all_but_latest: true
-      - uses: actions/checkout@v5
-      - name: "Set up Ruby"
-        uses: ruby/setup-ruby@master
-        with:
-          ruby-version: ${{ matrix.ruby-version }}
-      - name: package ${{ matrix.arch }}
-        run: |
-          uname -m
-          cd windows
-          sh -c 'mkdir -p cache output/${{ matrix.ruby-version }}'
-          sh -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}'
-          sh -c './package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}'
-          sh -c 'ls'
-      - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}"
-        uses: actions/upload-artifact@v5
-        with:
-          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
-          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
-  make-windows-arm:
-    strategy:
-      matrix:
-        os: [macos-latest]
-        arch: [arm64]
-        ruby-version: [3.4.7]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    steps:
-      # - name: Cancel Previous Runs
-      #   uses: styfle/cancel-workflow-action@0.11.0
-      #   with:
-      #     all_but_latest: true
       - uses: actions/checkout@v5
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@master
@@ -74,3 +41,31 @@ jobs:
         with:
           name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
           path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+
+  test-windows:
+    needs: build-windows
+    strategy:
+      matrix:
+        arch: [x86_64]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        os: [windows-latest]
+        include:
+          - os: windows-11-arm
+            arch: arm64
+            ruby-version: 3.4.7
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Download Artifact"
+        uses: actions/download-artifact@v5
+        with:
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+      - name: "Test binary"
+        run: |
+          mkdir output
+          tar xzf traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz -C output
+          ../shared/test-gems.sh -p windows -a ${{ matrix.arch }} output
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
+          ARCHITECTURES: ${{ matrix.arch }}

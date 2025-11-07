@@ -14,6 +14,11 @@ task :build do
   # Do nothing
 end
 
+desc "Test all Ruby versions (#{RUBY_VERSIONS.join(' ')})"
+task :test do
+  # Do nothing
+end
+
 desc "Upload all packages to the server"
 task :upload do
   # Do nothing
@@ -35,6 +40,7 @@ ARCHITECTURES.each do |arch|
 
     task :package => "package:#{arch}:#{ruby_version}"
     task :build   => "build:#{ruby_version}"
+    task :test    => "test:#{ruby_version}:#{arch}"
     task :upload  => "upload:#{ruby_version}"
     task :clean   => "clean:#{ruby_version}"
 
@@ -56,6 +62,11 @@ ARCHITECTURES.each do |arch|
     file("output/#{ruby_version}/#{arch}/bin") do
       sh "mkdir -p cache \"output/#{ruby_version}/#{arch}\""
       sh "./build-ruby.sh -a #{arch} -r #{ruby_version} cache \"output/#{ruby_version}/#{arch}\""
+    end
+
+    desc "Test Ruby #{ruby_version} #{arch}"
+    task "test:#{ruby_version}:#{arch}" => "output/#{ruby_version}/#{arch}/bin" do
+      sh "../shared/test-gems.sh -p windows -a #{arch} \"output/#{ruby_version}/#{arch}\""
     end
 
     desc "Upload Ruby #{ruby_version} packages to the server"
