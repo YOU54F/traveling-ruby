@@ -1,4 +1,4 @@
-IMAGE_VERSION = "next-alpine"
+IMAGE_VERSION = "4.0.0-alpine"
 
 VERSION       = File.read("../VERSION.txt").strip
 RUBY_VERSIONS = ENV['RUBY_VERSIONS'] ? [].push(ENV['RUBY_VERSIONS']) : File.read("../RUBY_VERSIONS.txt").strip.split(/\s+/)
