@@ -35,7 +35,7 @@ jobs:
           ARCHITECTURES: "arm64"
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
       - name: package gems
-        run: ./scripts/package-gems.sh     
+        run: ./scripts/package-gems.sh    
         env:
           PLATFORM: alpine
       - name: 'Upload Artifact - linux arm64'
@@ -51,18 +51,6 @@ jobs:
           ARCHITECTURES: "arm64"
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
 
-      - name: Process and rename gem archives
-        working-directory: alpine
-        run: |
-          for file in $(find traveling-ruby-gems-* -name '*.gz'); do
-            gem_name=$(echo "${file%-*}" | tr '/' '-')
-            gem_version=$(echo "${file%.tar.gz}" | awk -F- '{print $NF}')
-            pkg_date=$(echo "${file%-*}" | cut -d'-' -f4)
-            ruby_version=$(echo "${file%-*}" | tr '/' '-' | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?)-([a-z]+)-([a-z0-9_]+)\.tar\.gz/\1/')
-            echo $ruby_version-$gem_version.tar.gz
-            cp "$file" $ruby_version-$gem_version.tar.gz
-          done
-          ls -l
 
       - name: Publish archives and packages
         if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
