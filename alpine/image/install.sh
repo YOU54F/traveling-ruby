@@ -4,11 +4,11 @@ set -e
 source /tr_build/functions.sh
 
 MYSQL_LIB_VERSION=6.1.9
-POSTGRESQL_VERSION=15.5
-ICU_RELEASE_VERSION=74-1
-ICU_FILE_VERSION=74_1
-LIBSSH2_VERSION=1.11.0
-LIBFFI_VERSION=3.4.5
+POSTGRESQL_VERSION=15.14
+ICU_RELEASE_VERSION=78.1
+ICU_FILE_VERSION=78.1
+LIBSSH2_VERSION=1.11.1
+LIBFFI_VERSION=3.5.2
 LIBYAML_VERSION=0.2.5
 MAKE_CONCURRENCY=10
 ARCHITECTURE_BITS=64
@@ -110,7 +110,7 @@ header "Installing ICU"
 if [[ ! -e /hbb_shlib/lib/libicudata.a ]]; then
 	download_and_extract icu4c-$ICU_FILE_VERSION-src.tgz \
 		icu/source \
-		https://github.com/unicode-org/icu/releases/download/release-$ICU_RELEASE_VERSION/icu4c-$ICU_FILE_VERSION-src.tgz
+		https://github.com/unicode-org/icu/releases/download/release-$ICU_RELEASE_VERSION/icu4c-$ICU_FILE_VERSION-sources.tgz
 
 	(
 		source /hbb_shlib/activate

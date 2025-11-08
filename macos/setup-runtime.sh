@@ -286,59 +286,63 @@ fi
 #######################################
 
 
-TOTAL_TOOLS=6
+TOTAL_TOOLS=7
 TOTAL_LIBS=14
-CCACHE_VERSION=4.9
+CCACHE_VERSION=4.12.1
 # https://github.com/ccache/ccache/releases
-CMAKE_VERSION=3.31.8
+CMAKE_VERSION=4.1.2
 # https://github.com/Kitware/CMake/releases/
 PKG_CONFIG_VERSION=0.29.2
 # https://pkgconfig.freedesktop.org/releases/
-AUTOCONF_VERSION=2.71
+AUTOCONF_VERSION=2.72
 # AUTOCONF_VERSION=2.72
 # https://ftp.gnu.org/gnu/autoconf/
-AUTOMAKE_VERSION=1.16.5
+AUTOMAKE_VERSION=1.18.1
 # https://ftp.gnu.org/gnu/automake/
-LIBTOOL_VERSION=2.4.7
+LIBTOOL_VERSION=2.5.4
 # https://ftp.gnu.org/gnu/libtool/
+M4_VERSION=1.4.20
+# https://ftp.gnu.org/gnu/m4/
 
 # if [[ "$OPENSSL_1_1_LEGACY" = true ]]; then
 # 	OPENSSL_VERSION=1.1.1w
 # else
-OPENSSL_VERSION=3.2.0
+OPENSSL_VERSION=3.6.0
 # fi
 # OPENSSL_VERSION=3.0.12
 # OPENSSL_VERSION=3.1.6
 # https://www.openssl.org/source/
-NCURSES_VERSION=6.4
+NCURSES_VERSION=6.5
 # https://ftp.gnu.org/pub/gnu/ncurses/
 # https://thrysoee.dk/editline/
-LIBEDIT_VERSION=20230828-3.1
-LIBEDIT_DIR_VERSION=20230828-3.1
+LIBEDIT_VERSION=20251016-3.1
+LIBEDIT_DIR_VERSION=20251016-3.1
 # https://gmplib.org/download/gmp/
 GMP_VERSION=6.3.0
 GMP_DIR_VERSION=6.3.0
 # https://github.com/libffi/libffi/releases/
-LIBFFI_VERSION=3.5.1
+LIBFFI_VERSION=3.5.2
 # https://pyyaml.org/download/libyaml/
 LIBYAML_VERSION=0.2.5
 # https://www.sqlite.org/download.html
-SQLITE3_VERSION=3450000
-SQLITE3_VERSION_YEAR=2024
+SQLITE3_VERSION=3510000
+SQLITE3_VERSION_YEAR=2025
 # https://tukaani.org/xz/
-XZ_VERSION=5.4.5
+XZ_VERSION=5.8.1
 MYSQL_LIB_VERSION=6.1.9
-# MYSQL_LIB_VERSION=8.3.0
-POSTGRESQL_VERSION=15.5
+# MYSQL_LIB_VERSION=9.5.0
+# POSTGRESQL_VERSION=17.6
+# POSTGRESQL_VERSION=16.10
+POSTGRESQL_VERSION=15.14
 # ICU_RELEASE_VERSION=71-1
 # ICU_FILE_VERSION=71_1
 # https://github.com/unicode-org/icu/releases/
-ICU_RELEASE_VERSION=74-1
-ICU_FILE_VERSION=74_1
+ICU_RELEASE_VERSION=78.1
+ICU_FILE_VERSION=78.1
 # https://www.libssh2.org/download/
-LIBSSH2_VERSION=1.11.0
+LIBSSH2_VERSION=1.11.1
 # http://xmlsoft.org/download
-LIBXML2_VERSION=2.9.14
+LIBXML2_VERSION=2.15.0
 LIBXSLT_VERSION=1.1.43
 # http://xmlsoft.org/download
 export PATH="$RUNTIME_DIR/bin:$PATH"
@@ -436,7 +440,26 @@ else
 fi
 echo
 
-header "Installing tool 4/$TOTAL_TOOLS: autoconf..."
+header "Installing tool 4/$TOTAL_TOOLS: m4..."
+if [[ ! -e "$RUNTIME_DIR/bin/m4" ]]; then
+	download_and_extract m4-$M4_VERSION.tar.gz \
+		https://ftp.gnu.org/gnu/m4/m4-$M4_VERSION.tar.gz
+	echo "Entering $RUNTIME_DIR/m4-$M4_VERSION"
+	pushd m4-$M4_VERSION >/dev/null
+
+	run ./configure --prefix="$RUNTIME_DIR"
+	run make -j$CONCURRENCY
+	run make install
+
+	echo "Leaving source directory"
+	popd >/dev/null
+	run rm -rf m4-$M4_VERSION
+else
+	echo "Already installed."
+fi
+echo
+
+header "Installing tool 5/$TOTAL_TOOLS: autoconf..."
 if $SKIP_AUTOCONF; then
 	echo "Skipped."
 elif [[ ! -e "$RUNTIME_DIR/bin/autoconf" ]] || $FORCE_AUTOCONF; then
@@ -456,7 +479,7 @@ else
 fi
 echo
 
-header "Installing tool 5/$TOTAL_TOOLS: automake..."
+header "Installing tool 6/$TOTAL_TOOLS: automake..."
 if $SKIP_AUTOMAKE; then
 	echo "Skipped."
 elif [[ ! -e "$RUNTIME_DIR/bin/automake" ]] || $FORCE_AUTOMAKE; then
@@ -476,7 +499,7 @@ else
 fi
 echo
 
-header "Installing tool 6/$TOTAL_TOOLS: libtool..."
+header "Installing tool 7/$TOTAL_TOOLS: libtool..."
 if $SKIP_LIBTOOL; then
 	echo "Skipped."
 elif [[ ! -e "$RUNTIME_DIR/bin/libtoolize" ]] || $FORCE_LIBTOOL; then
@@ -566,7 +589,7 @@ elif [[ ! -e "$RUNTIME_DIR/lib/libncurses.6.dylib" ]] || $FORCE_NCURSES; then
 
 	run ./configure --prefix="$RUNTIME_DIR" --with-shared --without-normal --without-cxx --without-cxx-binding \
 		--without-ada --without-manpages --without-tests --enable-pc-files \
-		--without-develop --build=$DEPLOY_TARGET
+		--without-develop --disable-widec --build=$DEPLOY_TARGET
 	run make -j$CONCURRENCY
 	run make install
 
@@ -739,13 +762,76 @@ elif [[ ! -e "$RUNTIME_DIR/lib/libsqlite3.a" ]] || $FORCE_SQLITE3; then
 	pushd sqlite-autoconf-$SQLITE3_VERSION >/dev/null
 
 	run ./configure --prefix="$RUNTIME_DIR" --disable-shared \
-		--disable-dynamic-extensions CFLAGS='-O2 -fPIC -fvisibility=hidden' --build=$DEPLOY_TARGET
+		--disable-load-extension CFLAGS='-O2 -fPIC -fvisibility=hidden' --build=$DEPLOY_TARGET
 	run make -j$CONCURRENCY
-	run make install-strip
+	run make install
+	strip -S "$RUNTIME_DIR/lib/libsqlite3.a"
 	echo "Entering $RUNTIME_DIR"
 	popd >/dev/null
 	run rm -rf sqlite-autoconf-$SQLITE3_VERSION
 	run lipo -info "$RUNTIME_DIR/lib/libsqlite3.a"
+else
+	echo "Already installed."
+fi
+echo
+
+SKIP_CMAKE_COMPAT=false
+FORCE_CMAKE_COMPAT=false
+TEMP_CMAKE_DIR="$RUNTIME_DIR/tmp_cmake_3.5"
+if $SKIP_CMAKE_COMPAT; then
+	echo "Skipped."
+elif [[ ! -d "$TEMP_CMAKE_DIR" ]] || $FORCE_CMAKE_COMPAT; then
+	header "Installing CMake 3.5 compatibility shim..."
+		download_and_extract cmake-3.5.2.tar.gz \
+			https://cmake.org/files/v3.5/cmake-3.5.2.tar.gz
+		echo "Entering $RUNTIME_DIR/cmake-3.5.2"
+		pushd cmake-3.5.2 >/dev/null
+
+		# Install to temporary directory to avoid overriding existing cmake
+		run ./configure --prefix="$TEMP_CMAKE_DIR" --no-qt-gui --parallel=$CONCURRENCY
+		run make -j$CONCURRENCY
+		run make install
+
+
+		echo "Leaving source directory"
+		popd >/dev/null
+		run rm -rf cmake-3.5.2
+else
+	echo "Already installed cmake 3.5."
+fi
+echo
+
+header "Compiling runtime libraries 9/$TOTAL_LIBS: MySQL..."
+if $SKIP_MYSQL; then
+	echo "Skipped."
+elif [[ ! -e "$RUNTIME_DIR/lib/libmysqlclient.a" ]] || $FORCE_MYSQL; then
+	download_and_extract mysql-connector-c-$MYSQL_LIB_VERSION-src.tar.gz \
+		https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-$MYSQL_LIB_VERSION-src.tar.gz
+	echo "Entering $RUNTIME_DIR/mysql-connector-c-$MYSQL_LIB_VERSION-src"
+	pushd mysql-connector-c-$MYSQL_LIB_VERSION-src >/dev/null
+
+	# We do not use internal/bin/cc and c++ because MySQL includes
+	# yassl, which has an OpenSSL compatibility layer. We want the
+	# yassl headers to be used, not the OpenSSL headers in the runtime.
+	run $TEMP_CMAKE_DIR/bin/cmake -DCMAKE_INSTALL_PREFIX="$RUNTIME_DIR" \
+		-DCMAKE_C_COMPILER=/usr/bin/cc \
+		-DCMAKE_CXX_COMPILER=/usr/bin/c++ \
+		-DCMAKE_C_FLAGS="-fPIC -fvisibility=hidden" \
+		-DCMAKE_CXX_FLAGS="-fPIC -fvisibility=hidden" . \
+		-DDISABLE_SHARED=1 \
+		-DCMAKE_VERBOSE_MAKEFILE=1 \
+		-DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE -DCMAKE_MACOSX_DEPLOYMENT_TARGET=12.2
+	run make -j$CONCURRENCY libmysql
+	run make -C libmysql install
+	run make -C include install
+	run make -C scripts install
+
+	echo "Leaving source directory"
+	popd >/dev/null
+	run rm -rf mysql-connector-c-$MYSQL_LIB_VERSION-src
+	run lipo -info "$RUNTIME_DIR/lib/libmysqlclient.a"
+	# https://stackoverflow.com/a/44790834/11598969
+	run sed -i '' 's/^libs="$libs -l "*/libs="$libs -l mysqlclient "/' "$RUNTIME_DIR"/bin/mysql_config
 else
 	echo "Already installed."
 fi
@@ -786,78 +872,6 @@ else
 fi
 echo
 
-header "Compiling runtime libraries 9/$TOTAL_LIBS: MySQL..."
-if $SKIP_MYSQL; then
-	echo "Skipped."
-elif [[ ! -e "$RUNTIME_DIR/lib/libmysqlclient.a" ]] || $FORCE_MYSQL; then
-	download_and_extract mysql-connector-c-$MYSQL_LIB_VERSION-src.tar.gz \
-		https://dev.mysql.com/get/Downloads/Connector-C/mysql-connector-c-$MYSQL_LIB_VERSION-src.tar.gz
-	echo "Entering $RUNTIME_DIR/mysql-connector-c-$MYSQL_LIB_VERSION-src"
-	pushd mysql-connector-c-$MYSQL_LIB_VERSION-src >/dev/null
-
-	# We do not use internal/bin/cc and c++ because MySQL includes
-	# yassl, which has an OpenSSL compatibility layer. We want the
-	# yassl headers to be used, not the OpenSSL headers in the runtime.
-	run cmake -DCMAKE_INSTALL_PREFIX="$RUNTIME_DIR" \
-		-DCMAKE_C_COMPILER=/usr/bin/cc \
-		-DCMAKE_CXX_COMPILER=/usr/bin/c++ \
-		-DCMAKE_C_FLAGS="-fPIC -fvisibility=hidden" \
-		-DCMAKE_CXX_FLAGS="-fPIC -fvisibility=hidden" . \
-		-DDISABLE_SHARED=1 \
-		-DCMAKE_VERBOSE_MAKEFILE=1 \
-		-DCMAKE_OSX_ARCHITECTURES=$ARCHITECTURE -DCMAKE_MACOSX_DEPLOYMENT_TARGET=12.2
-	run make -j$CONCURRENCY libmysql
-	run make -C libmysql install
-	run make -C include install
-	run make -C scripts install
-
-	echo "Leaving source directory"
-	popd >/dev/null
-	run rm -rf mysql-connector-c-$MYSQL_LIB_VERSION-src
-	run lipo -info "$RUNTIME_DIR/lib/libmysqlclient.a"
-	# https://stackoverflow.com/a/44790834/11598969
-	run sed -i '' 's/^libs="$libs -l "*/libs="$libs -l mysqlclient "/' "$RUNTIME_DIR"/bin/mysql_config
-else
-	echo "Already installed."
-fi
-echo
-
-# header "Compiling runtime libraries 9/$TOTAL_LIBS: MySQL..."
-# if $SKIP_MYSQL; then
-# 	echo "Skipped."
-# elif [[ ! -e "$RUNTIME_DIR/lib/libmysqlclient.a" ]] || $FORCE_MYSQL; then
-# 	download_and_extract mysql-connector-c++-$MYSQL_LIB_VERSION-src.tar.gz \
-# 		https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-$MYSQL_LIB_VERSION-src.tar.gz
-# 	echo "Entering $RUNTIME_DIR/mysql-connector-c++-$MYSQL_LIB_VERSION-src"
-# 	pushd mysql-connector-c++-$MYSQL_LIB_VERSION-src >/dev/null
-
-# 	# We do not use internal/bin/cc and c++ because MySQL includes
-# 	# yassl, which has an OpenSSL compatibility layer. We want the
-# 	# yassl headers to be used, not the OpenSSL headers in the runtime.
-# 	run cmake -DCMAKE_INSTALL_PREFIX="$RUNTIME_DIR" \
-# 		-DCMAKE_C_COMPILER=/usr/bin/cc \
-# 		-DCMAKE_CXX_COMPILER=/usr/bin/c++ \
-# 		-DCMAKE_C_FLAGS="-fPIC -fvisibility=hidden" \
-# 		-DCMAKE_CXX_FLAGS="-fPIC -fvisibility=hidden" . \
-# 		-DDISABLE_SHARED=1 \
-# 		-DCMAKE_VERBOSE_MAKEFILE=1
-# 		# -DBUILD_STATIC=true \
-# 		# -DSTATIC_CONCPP=1
-# 	run cmake --build . --config=build_type
-# 	# run make -j$CONCURRENCY libmysql
-# 	# run make -C libmysql install
-# 	# run make -C include install
-# 	# run make -C scripts install
-
-# 	echo "Leaving source directory"
-# 	popd >/dev/null
-# 	run rm -rf mysql-connector-c++-$MYSQL_LIB_VERSION-src
-# 	run lipo -info "$RUNTIME_DIR/lib/libmysqlclient.a"
-# else
-# 	echo "Already installed."
-# fi
-# echo
-
 header "Compiling runtime libraries 10/$TOTAL_LIBS: PostgreSQL..."
 if $SKIP_POSTGRESQL; then
 	echo "Skipped."
@@ -869,7 +883,7 @@ elif [[ ! -e "$RUNTIME_DIR/lib/libpq.a" ]] || $FORCE_POSTGRESQL; then
 
 	run ./configure --prefix="$RUNTIME_DIR" \
 		PG_SYSROOT="$(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${MACOSX_DEPLOYMENT_TARGET}.sdk" \
-		CFLAGS="-O2 -fPIC -fvisibility=hidden" --build=$DEPLOY_TARGET
+		CFLAGS="-O2 -fPIC -fvisibility=hidden" --build=$DEPLOY_TARGET --without-icu
 	# PostgreSQL's build system sometimes fails when building with
 	# concurrency, so we don't do it.
 	run make -C src/common
@@ -905,7 +919,7 @@ if $SKIP_ICU; then
 	echo "Skipped."
 elif [[ ! -e "$RUNTIME_DIR/lib/libicudata.a" ]] || $FORCE_ICU; then
 	download_and_extract icu4c-$ICU_FILE_VERSION-src.tgz \
-		https://github.com/unicode-org/icu/releases/download/release-$ICU_RELEASE_VERSION/icu4c-$ICU_FILE_VERSION-src.tgz
+		https://github.com/unicode-org/icu/releases/download/release-$ICU_RELEASE_VERSION/icu4c-$ICU_FILE_VERSION-sources.tgz
 	echo "Entering $RUNTIME_DIR/icu"
 	pushd icu/source >/dev/null
 
