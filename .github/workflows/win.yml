@@ -35,12 +35,12 @@ jobs:
         working-directory: windows
         run: |
             uname -m
-            mkdir -p cache output/${{ matrix.ruby-version }}
-            ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}
-            ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}
-            ./package.sh -E traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }} output/${{ matrix.ruby-version }}
+            mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./package.sh -E traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }} output/${{ matrix.ruby-version }}/${{ matrix.arch }}
             touch traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}/ok
-            ./package.sh -f -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}-full.tar.gz output/3.4.7-arm64
+            ./package.sh -f -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}-full.tar.gz output/${{ matrix.ruby-version }}/${{ matrix.arch }}
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}

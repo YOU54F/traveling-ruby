@@ -58,7 +58,7 @@ ARCHITECTURES.each do |arch|
 
     desc "Create full fat package for Ruby #{ruby_version} #{arch}"
     task "package_full:#{ruby_version}:#{arch}" => ["#{gem_dir}/ok"] do
-      sh "./package.sh -f -r #{package_full} output/#{ruby_version}-#{arch}"
+      sh "./package.sh -f -r #{package_full} output/#{ruby_version}/#{arch}"
     end
 
     file(package => "output/#{ruby_version}/#{arch}/bin") do
