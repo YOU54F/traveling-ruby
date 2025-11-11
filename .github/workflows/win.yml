@@ -43,6 +43,7 @@ jobs:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
       - name: package gems
+        shell: bash
         run: ./scripts/package-gems.sh    
         env:
           PLATFORM: windows
