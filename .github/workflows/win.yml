@@ -26,10 +26,14 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v5
-      - name: "Set up Ruby"
-        uses: ruby/setup-ruby@master
+      - uses: ruby/setup-ruby-pkgs@v1
+        if: runner.os == 'windows' # no bundler cache as we need to install nokogiri/sqlite3 forks first
         with:
+          working-directory: shared/gemfiles/$PKG_DATE
+          mingw:             icu mman perl-Socket6
+          # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
       - name: package ${{ matrix.arch }}
         shell: bash
         working-directory: windows
