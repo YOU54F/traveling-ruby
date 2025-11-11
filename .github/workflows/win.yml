@@ -2,7 +2,7 @@ name: Windows
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, test/win-ext ]
   pull_request:
     branches: [ main ]
   release:

@@ -5,38 +5,38 @@ gem 'json'
 gem 'bigdecimal', force_ruby_platform: true
 
 ## Working locally
-# gem 'ffi', force_ruby_platform: true
-# gem 'yajl-ruby'
-# gem 'rexml'
-# gem 'bcrypt'
-# gem 'escape_utils'
-# gem 'eventmachine', force_ruby_platform: true
-# gem 'fast-stemmer'
-# gem 'hitimes'
-# gem 'pg', force_ruby_platform: true
-# gem 'puma', force_ruby_platform: true
-# gem 'redcarpet'
-# gem 'RedCloth'
-# gem 'thin'
-# gem 'unf_ext'
-# gem 'mini_portile2'
-# gem 'mysql2', force_ruby_platform: true
-# gem 'stringio', force_ruby_platform: true
-# gem 'psych', force_ruby_platform: true
-# gem 'pact_broker-client'
-# gem 'webrick'
-# gem 'rinda'
-# gem 'fiddle', force_ruby_platform: true
-# gem 'test-unit'
+gem 'ffi', force_ruby_platform: true
+gem 'yajl-ruby'
+gem 'rexml'
+gem 'bcrypt'
+gem 'escape_utils'
+gem 'eventmachine', force_ruby_platform: true
+gem 'fast-stemmer'
+gem 'hitimes'
+gem 'pg', force_ruby_platform: true
+gem 'puma', force_ruby_platform: true
+gem 'redcarpet'
+gem 'RedCloth'
+gem 'thin'
+gem 'unf_ext'
+gem 'mini_portile2'
+gem 'mysql2', force_ruby_platform: true
+gem 'stringio', force_ruby_platform: true
+gem 'psych', force_ruby_platform: true
+gem 'pact_broker-client'
+gem 'webrick'
+gem 'rinda'
+gem 'fiddle', force_ruby_platform: true
+gem 'test-unit'
 
 
 ## TODO - Windows
-# gem 'charlock_holmes', force_ruby_platform: true
-# gem 'curses', force_ruby_platform: true
-# gem 'kgio', force_ruby_platform: true
-# gem 'raindrops', force_ruby_platform: true
-# gem 'rugged', force_ruby_platform: true
-# gem "sqlite3", force_ruby_platform: true
-# gem 'unicorn', force_ruby_platform: true
-# gem 'nokogiri', force_ruby_platform: true
-# gem 'pact_broker'
+gem 'charlock_holmes', force_ruby_platform: true
+gem 'curses', force_ruby_platform: true
+gem 'kgio', force_ruby_platform: true
+gem 'raindrops', force_ruby_platform: true
+gem 'rugged', force_ruby_platform: true
+gem "sqlite3", force_ruby_platform: true
+gem 'unicorn', force_ruby_platform: true
+gem 'nokogiri', force_ruby_platform: true
+gem 'pact_broker'
