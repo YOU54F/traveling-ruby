@@ -31,7 +31,8 @@ jobs:
         with:
           # working-directory: shared/gemfiles/${{ env.PKG_DATE }}
           # mingw:             icu 
-          mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
+          mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
+          # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           ruby-version: ${{ matrix.ruby-version }}
           # bundler-cache: true
       - name: package ${{ matrix.arch }}
