@@ -9,7 +9,6 @@ GEM
     base64 (0.3.0)
     bcrypt (3.1.20)
     bigdecimal (3.3.1)
-    charlock_holmes (0.7.9)
     concurrent-ruby (1.3.5)
     crass (1.0.6)
     csv (3.3.5)
@@ -80,7 +79,6 @@ GEM
     json (2.16.0)
     jsonpath (1.1.5)
       multi_json
-    kgio (2.11.4)
     logger (1.7.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
@@ -153,7 +151,6 @@ GEM
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
     rainbow (3.1.1)
-    raindrops (0.20.1)
     rake (13.3.1)
     redcarpet (3.6.1)
     reform (2.6.2)
@@ -212,9 +209,6 @@ GEM
     trailblazer-option (0.1.2)
     uber (0.1.0)
     unf_ext (0.0.9.1)
-    unicorn (6.1.0)
-      kgio (~> 2.6)
-      raindrops (~> 0.7)
     webmachine (2.0.1)
       as-notifications (>= 1.0.2, < 2.0)
       base64
@@ -240,7 +234,6 @@ DEPENDENCIES
   RedCloth
   bcrypt
   bigdecimal
-  charlock_holmes
   curses
   escape_utils
   eventmachine
@@ -249,7 +242,6 @@ DEPENDENCIES
   fiddle
   hitimes
   json
-  kgio
   mini_portile2
   mysql2
   nokogiri
@@ -258,7 +250,6 @@ DEPENDENCIES
   pg
   psych
   puma
-  raindrops
   redcarpet
   rexml
   rinda
@@ -268,7 +259,6 @@ DEPENDENCIES
   test-unit
   thin
   unf_ext
-  unicorn
   webrick
   yajl-ruby
 
