@@ -30,6 +30,7 @@ jobs:
         run: |
             cd linux
             rake
+            rake package_full
             ls
         env:
           ARCHITECTURES: "x86_64"

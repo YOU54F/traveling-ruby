@@ -39,6 +39,8 @@ jobs:
             ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}
             ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}
             ./package.sh -E traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }} output/${{ matrix.ruby-version }}
+            touch traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}/ok
+            ./package.sh -f -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}-full.tar.gz output/3.4.7-arm64
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
@@ -65,7 +67,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  test-windows:
+  test-windows-min:
     needs: build-windows
     strategy:
       matrix:
@@ -91,6 +93,36 @@ jobs:
         run: |
           mkdir output
           tar xzf traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz -C output
+          ../shared/test-gems.sh -p windows -a ${{ matrix.arch }} output
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
+          ARCHITECTURES: ${{ matrix.arch }}
+  test-windows-full:
+    needs: build-windows
+    strategy:
+      matrix:
+        arch: [x86_64]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        os: [windows-latest]
+        # include:
+        #   - os: windows-11-arm
+        #     arch: arm64
+        #     ruby-version: 3.4.7
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Download Artifact"
+        uses: actions/download-artifact@v5
+        with:
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+          path: windows/
+      - name: "Test binary"
+        working-directory: windows
+        shell: bash
+        run: |
+          mkdir output
+          tar xzf traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}-full.tar.gz -C output
           ../shared/test-gems.sh -p windows -a ${{ matrix.arch }} output
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}

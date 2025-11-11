@@ -100,6 +100,7 @@ jobs:
           cd macos
           rake stash_conflicting_paths
           rake --trace
+            rake package_full
           rake unstash_conflicting_paths
           ls
         env:
