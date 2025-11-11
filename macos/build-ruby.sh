@@ -5,9 +5,9 @@ SELFDIR=`dirname "$0"`
 SELFDIR=`cd "$SELFDIR" && pwd`
 source "$SELFDIR/internal/reset_environment.sh"
 source "$SELFDIR/../shared/library.sh"
-BUNDLER_VERSION=`cat "$SELFDIR/../BUNDLER_VERSION.txt"`
-RUBY_VERSIONS=(`cat "$SELFDIR/../RUBY_VERSIONS.txt"`)
-RUBYGEMS_VERSION=`cat "$SELFDIR/../RUBYGEMS_VERSION.txt"`
+BUNDLER_VERSION=`cat "$SELFDIR/../versions/BUNDLER_VERSION.txt"`
+RUBY_VERSIONS=(`cat "$SELFDIR/../versions/RUBY_VERSIONS.txt"`)
+RUBYGEMS_VERSION=`cat "$SELFDIR/../versions/RUBYGEMS_VERSION.txt"`
 
 GEMFILES=()
 

@@ -6,7 +6,7 @@ SELFDIR=`cd "$SELFDIR" && pwd`
 source "$SELFDIR/../shared/library.sh"
 
 CPUCOUNT=`"$SELFDIR/internal/cpucount.sh"`
-RUBY_VERSIONS=(`cat "$SELFDIR/../RUBY_VERSIONS.txt"`)
+RUBY_VERSIONS=(`cat "$SELFDIR/../versions/versions/RUBY_VERSIONS.txt"`)
 
 OUTPUT_DIR=
 IMAGE=
@@ -161,8 +161,8 @@ exec docker run \
 	"${GEMFILE_MOUNT[@]}" \
 	-e "APP_UID=`id -u`" \
 	-e "APP_GID=`id -g`" \
-	-e "BUNDLER_VERSION=`cat \"$SELFDIR/../BUNDLER_VERSION.txt\"`" \
-	-e "RUBYGEMS_VERSION=`cat \"$SELFDIR/../RUBYGEMS_VERSION.txt\"`" \
+	-e "BUNDLER_VERSION=`cat \"$SELFDIR/../versions/BUNDLER_VERSION.txt\"`" \
+	-e "RUBYGEMS_VERSION=`cat \"$SELFDIR/../versions/RUBYGEMS_VERSION.txt\"`" \
 	-e "ARCHITECTURE=$ARCHITECTURE" \
 	-e "RUBY_VERSION=$RUBY_VERSION" \
 	-e "CONCURRENCY=$CONCURRENCY" \

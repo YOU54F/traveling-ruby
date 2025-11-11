@@ -22,7 +22,7 @@ jobs:
             ruby-version: 3.3.10
       - name: build image
         run: |
-            cd alpine
+            cd linux-musl
             ARCHITECTURES="arm64" rake image
             docker images
         env:
@@ -36,4 +36,4 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push you54f/traveling-ruby-builder-arm64:4.0.0-alpine
+          docker push you54f/traveling-ruby-builder-arm64:4.0.0-linux-musl

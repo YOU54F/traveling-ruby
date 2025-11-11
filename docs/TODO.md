@@ -2,34 +2,21 @@
 
 Just some WIP notes to keep some track of testing progress
 
-### Latest Ruby Versions
-
-- `3.4.7`
-- `3.3.10`
-- `3.2.9`
-- `3.1.6`
-- `3.0.7`
-- `2.6.10`
-
-#### Ruby Build Caveats
+## Ruby Build Caveats
 
 - 3.0.x and below builds require openssl 1.1.1
   - Set `OPENSSL_1_1_LEGACY` to build OpenSSL 1.1.1 for macos.
 - Linux 2.6.10 - Requires bundler version 2.4.x (latest 2.4.22 at time of writing)
 
-### Ruby Versions failing to build
+## Ruby Versions failing to build
 
 - Linux  `3.0.5` / `3.0.7`
   - OpenSSL not found error (when using OpenSSL 3.2 or OpenSSL 1.1.1)
- - Linux  `2.7.8`
-  - OpenSSL gem fails to build 
+- Linux  `2.7.8`
+- OpenSSL gem fails to build
 - MacOS  `2.6.10` / `2.7.8`
 
 ### Gems failing testing
-
-- `test-unit`
-  - MacOS
-  - Linux
 
 - `debug`
   - Ruby `3.0.x`

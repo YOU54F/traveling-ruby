@@ -4,7 +4,7 @@ set -e
 SELFDIR=`dirname "$0"`
 SELFDIR=`cd "$SELFDIR" && pwd`
 source "$SELFDIR/library.sh"
-BUNDLER_VERSION=`cat "$SELFDIR/../BUNDLER_VERSION.txt"`
+BUNDLER_VERSION=`cat "$SELFDIR/../versions/BUNDLER_VERSION.txt"`
 # if [[ "$RUBY_VERSIONS" < "3.0.0" ]]; then
 #     BUNDLER_VERSION="2.4.22"
 # fi

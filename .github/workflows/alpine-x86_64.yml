@@ -1,4 +1,4 @@
-name: Alpine Musl - x86_64 - build from dockerhub builder
+name: Alpine linux-musl - x86_64 - build from dockerhub builder
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ env:
   PKG_DATE: 20251111
 
 jobs:
-  make-alpine-x86_64:
+  make-linux-musl-x86_64:
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -28,7 +28,7 @@ jobs:
             ruby-version: ${{ matrix.ruby-version }}
       - name: package
         run: |
-            cd alpine
+            cd linux-musl
             rake
             rake package_full
             ls
@@ -38,15 +38,15 @@ jobs:
       - name: package gems
         run: ./scripts/package-gems.sh    
         env:
-          PLATFORM: alpine
+          PLATFORM: linux-musl
       - name: 'Upload Artifact - linux x86_64'
         uses: actions/upload-artifact@v5
         with:
           name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-linux-musl-x86_64.tar.gz
-          path: alpine/traveling-ruby*.tar.gz
+          path: linux-musl/traveling-ruby*.tar.gz
       - name: test
         run: |
-            cd alpine
+            cd linux-musl
             rake test_docker
         env:
           ARCHITECTURES: "x86_64"
@@ -60,6 +60,6 @@ jobs:
           name: 'Release ${{ github.event.release.tag_name }}'
           generate_release_notes: true
           body: ${{ github.event.release.body }}
-          files: alpine/traveling-ruby-*.tar.gz
+          files: linux-musl/traveling-ruby-*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

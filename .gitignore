@@ -1,9 +1,9 @@
 /linux/runtime
 /linux/output
 /linux/traveling-ruby-gems*
-/alpine/runtime
-/alpine/output
-/alpine/traveling-ruby-gems*
+/linux-musl/runtime
+/linux-musl/output
+/linux-musl/traveling-ruby-gems*
 /macos/traveling-ruby-gems*
 /windows/traveling-ruby-gems*
 /macos/runtime*
