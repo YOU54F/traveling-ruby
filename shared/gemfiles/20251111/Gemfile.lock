@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bigdecimal (3.3.1)
+    json (2.16.0)
+
+PLATFORMS
+  aarch64-linux
+  aarch64-mingw-ucrt
+  arm-linux
+  arm64-darwin
+  ruby
+  x64-mingw-ucrt
+  x86-linux
+  x86_64-darwin
+  x86_64-linux
+
+DEPENDENCIES
+  bigdecimal
+  json
+
+BUNDLED WITH
+   2.6.9

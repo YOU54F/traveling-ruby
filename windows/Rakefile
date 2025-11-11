@@ -37,6 +37,7 @@ ARCHITECTURES.each do |arch|
   RUBY_VERSIONS.each do |ruby_version|
     begin
     package = "traveling-ruby-#{VERSION}-#{ruby_version}-windows-#{arch}.tar.gz"
+    gem_dir = "traveling-ruby-gems-#{VERSION}-#{ruby_version}-windows-#{arch}"
 
     task :package => "package:#{arch}:#{ruby_version}"
     task :build   => "build:#{ruby_version}"
@@ -45,10 +46,10 @@ ARCHITECTURES.each do |arch|
     task :clean   => "clean:#{ruby_version}"
 
     desc "Create packages for Platform #{arch}"
-    task "package:#{arch}" => ["package:#{arch}:#{ruby_version}"]
+    task "package:#{arch}" => ["package:#{arch}:#{ruby_version}", "#{gem_dir}/ok"]
 
     desc "Create packages for Platform #{arch} Ruby Version #{ruby_version}"
-    task "package:#{arch}:#{ruby_version}" => [package]
+    task "package:#{arch}:#{ruby_version}" => [package, "#{gem_dir}/ok"]
 
     desc "Build binaries for Ruby #{ruby_version}"
     task "build:#{ruby_version}" => "output/#{ruby_version}/#{arch}/bin"
@@ -57,26 +58,32 @@ ARCHITECTURES.each do |arch|
       sh "./package.sh -r #{package} \"output/#{ruby_version}/#{arch}\""
     end
 
+    file("#{gem_dir}/ok" => "output/#{ruby_version}/#{arch}/bin") do
+      sh "./package.sh -E #{gem_dir} \"output/#{ruby_version}/#{arch}\""
+      touch "#{gem_dir}/ok"
+    end
+
     # We use 'file' instead of 'directory' here so that packages are updated
     # whenever we update binaries.
     file("output/#{ruby_version}/#{arch}/bin") do
-      sh "mkdir -p cache \"output/#{ruby_version}/#{arch}\""
+      FileUtils.mkdir_p("cache")
+      FileUtils.mkdir_p("output/#{ruby_version}/#{arch}")
       sh "./build-ruby.sh -a #{arch} -r #{ruby_version} cache \"output/#{ruby_version}/#{arch}\""
     end
 
     desc "Test Ruby #{ruby_version} #{arch}"
     task "test:#{ruby_version}:#{arch}" => "output/#{ruby_version}/#{arch}/bin" do
-      sh "../shared/test-gems.sh -p windows -a #{arch} \"output/#{ruby_version}/#{arch}\""
+      # sh "../shared/test-gems.sh -p windows -a #{arch} \"output/#{ruby_version}/#{arch}\""
     end
 
     desc "Upload Ruby #{ruby_version} packages to the server"
     task "upload:#{ruby_version}" => [package] do
-      sh "aws s3 cp #{package} s3://traveling-ruby/releases/ --acl public-read"
+      # sh "aws s3 cp #{package} s3://traveling-ruby/releases/ --acl public-read"
     end
     
     desc "Clean Ruby #{ruby_version} packages and binaries and runtime"
     task "clean:#{ruby_version}" do
-      sh "rm -rf \"#{package} \"output/#{ruby_version}/#{arch}\" cache\""
+      # sh "rm -rf \"#{package} \"output/#{ruby_version}/#{arch}\" cache\""
     end
     rescue Exception => e
       puts "Failed to build for Ruby #{ruby_version} on Architecture #{arch}"

@@ -1,4 +1,4 @@
-name: Windows
+name: Windows-via-unix
 on:
   workflow_dispatch:
   push:
@@ -13,16 +13,14 @@ env:
 
 jobs:
   build-windows:
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     strategy:
       matrix:
-        arch: [x86_64]
+        arch: [x86_64, x86]
         ruby-version: [3.2.9, 3.3.10, 3.4.7]
-        os: [windows-latest]
-        # include:
-        #   - os: windows-11-arm
-        #     arch: arm64
-        #     ruby-version: 3.4.7
+        include:
+          - arch: arm64
+            ruby-version: 3.4.7
       fail-fast: false
     steps:
       - uses: actions/checkout@v5
@@ -31,26 +29,20 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
       - name: package ${{ matrix.arch }}
-        shell: bash
-        working-directory: windows
         run: |
-            uname -m
-            mkdir -p cache output/${{ matrix.ruby-version }}
-            ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}
-            ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}
-            ./package.sh -E traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }} output/${{ matrix.ruby-version }}
+          uname -m
+          cd windows
+          brew install 7zip
+          rake
+          ls
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
-      - name: package gems
-        run: ./scripts/package-gems.sh    
-        env:
-          PLATFORM: windows
       - name: "Upload Artifact - traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}"
         uses: actions/upload-artifact@v5
         with:
-          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch}}.tar.gz
-          path: windows/*.tar.gz
+          name: traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
+          path: windows/traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz
 
       - name: Publish archives and packages
         if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
@@ -71,10 +63,10 @@ jobs:
         arch: [x86_64]
         ruby-version: [3.2.9, 3.3.10, 3.4.7]
         os: [windows-latest]
-        # include:
-        #   - os: windows-11-arm
-        #     arch: arm64
-        #     ruby-version: 3.4.7
+        include:
+          - os: windows-11-arm
+            arch: arm64
+            ruby-version: 3.4.7
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:

@@ -10,7 +10,7 @@ on:
     types: [published]
 
 env:
-  PKG_DATE: 20251107
+  PKG_DATE: 20251111
 
 jobs:
   make-alpine-arm64:

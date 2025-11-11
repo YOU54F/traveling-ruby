@@ -10,6 +10,8 @@ RUBY_VERSIONS=(`cat "$SELFDIR/../RUBY_VERSIONS.txt"`)
 RUBYGEMS_VERSION=`cat "$SELFDIR/../RUBYGEMS_VERSION.txt"`
 N_RUBY_VERSIONS=${#RUBY_VERSIONS[@]}
 LAST_RUBY_VERSION_INDEX=$((N_RUBY_VERSIONS - 1))
+GEMFILES=()
+GEMFILE="$SELFDIR/../shared/gemfiles"
 
 CACHE_DIR=
 OUTPUT_DIR=
@@ -191,25 +193,63 @@ echo $GEM_PLATFORM > "$OUTPUT_DIR/info/GEM_PLATFORM"
 echo $GEM_EXTENSION_API_VERSION > "$OUTPUT_DIR/info/GEM_EXTENSION_API_VERSION"
 echo
 
-header "Updating RubyGems..."
-
-if $OUTPUT_DIR/bin/gem --version | grep -q $RUBYGEMS_VERSION; then
-	echo "RubyGems is up to date."
-else
-	echo "RubyGems is out of date, updating..."
-	run $OUTPUT_DIR/bin/gem update --system $RUBYGEMS_VERSION --no-document
+if [[ "$GEMFILE" != "" ]]; then
+	GEMFILE="`absolute_path \"$GEMFILE\"`"
+	if [[ -d "$GEMFILE" ]]; then
+		GEMFILES=("$GEMFILE"/*/Gemfile)
+	else
+		GEMFILES=("$GEMFILE")
+	fi
 fi
 
-header "Installing Bundler..."
-if [[ -e "$CACHE_DIR/bundler-$BUNDLER_VERSION.gem" ]]; then
-	run $OUTPUT_DIR/bin/gem install "$CACHE_DIR/bundler-$BUNDLER_VERSION.gem" --no-document \
-		--install-dir "$OUTPUT_DIR/lib/ruby/gems/$RUBY_COMPAT_VERSION"
-else
-	run $OUTPUT_DIR/bin/gem install bundler -v $BUNDLER_VERSION --no-document \
-		--install-dir "$OUTPUT_DIR/lib/ruby/gems/$RUBY_COMPAT_VERSION"
+if [[ "$GEMFILE" != "" ]]; then
+	# Restore cached gems.
+	if [[ -e "$CACHE_DIR/vendor" ]]; then
+		run cp -pR "$CACHE_DIR/vendor" vendor
+	fi
+
+	# Update RubyGems to the specified version.
+	header "Updating RubyGems..."
+	if "$OUTPUT_DIR/bin/gem" --version | grep -q $RUBYGEMS_VERSION; then
+		echo "RubyGems is up to date."
+	else
+		echo "RubyGems is out of date, updating..."
+		run "$OUTPUT_DIR/bin/gem" update --system $RUBYGEMS_VERSION --no-document
+		run "$OUTPUT_DIR/bin/gem" uninstall -aIx rubygems-update
+	fi
+
+	# Install Bundler, either from cache or directly.
+	if [[ -e "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" ]]; then
+		run "$OUTPUT_DIR/bin/gem" install "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" --no-document
+	else
+		run "$OUTPUT_DIR/bin/gem" install bundler -v $BUNDLER_VERSION --no-document
+		run mkdir -p "$CACHE_DIR/vendor/cache"
+		run cp "$OUTPUT_DIR"/lib/ruby/gems/$RUBY_COMPAT_VERSION/cache/bundler-$BUNDLER_VERSION.gem \
+			"$CACHE_DIR/vendor/cache/"
+	fi
+
+	export BUNDLE_BUILD__PG="--use-system-libraries"
+	# export BUNDLE_BUILD__NOKOGIRI="--with-xml2-include=$CACHE_DIR/include/libxml2"
+	# export BUNDLE_BUILD__PSYCH="--with-libyaml-include=$CACHE_DIR/include"
+	# export BUNDLE_BUILD__FFI="--use-system-libraries"
+	# export BUNDLE_BUILD__MYSQL2="--with-mysql_config"
+	# export BUNDLE_BUILD__CHARLOCK_HOLMES="--with-icu-dir=$CACHE_DIR"
+
+	# Run bundle install.
+	for GEMFILE in "${GEMFILES[@]}"; do
+		run cp "$GEMFILE" ./
+		if [[ -e "$GEMFILE.lock" ]]; then
+			run cp "$GEMFILE.lock" ./
+		fi
+		run "$OUTPUT_DIR/bin/bundle" config set --local system true
+		run "$OUTPUT_DIR/bin/bundle" install --retry 3 --jobs 4
+		run "$OUTPUT_DIR/bin/bundle" package
+		# Cache gems.
+		run mkdir -p "$CACHE_DIR/vendor/cache"
+		run mv vendor/cache/* "$CACHE_DIR"/vendor/cache/
+		run rm -rf Gemfile* .bundle
+	done
 fi
-run cp "$OUTPUT_DIR/lib/ruby/gems/$RUBY_COMPAT_VERSION/cache"/*.gem "$CACHE_DIR/" || true
-echo
 
 
 header "Postprocessing..."
