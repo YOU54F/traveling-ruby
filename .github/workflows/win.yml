@@ -60,12 +60,12 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           # bundler-cache: true
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
-        shell: msys2 {0}
+        # shell: msys2 {0}
         if: matrix.arch == 'arm64'
         working-directory: windows
         run: |
             set MSYSTEM=CLANGARM64
-            uname -m
+            msys2 -c 'uname -m'
             mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
             msys2 -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}'
         env:
