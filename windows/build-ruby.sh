@@ -229,10 +229,10 @@ if [[ "$GEMFILE" != "" ]]; then
 	fi
 
 	export BUNDLE_BUILD__PG="--use-system-libraries"
+	export BUNDLE_BUILD__MYSQL2="--use-system-libraries"
 	# export BUNDLE_BUILD__NOKOGIRI="--with-xml2-include=$CACHE_DIR/include/libxml2"
 	# export BUNDLE_BUILD__PSYCH="--with-libyaml-include=$CACHE_DIR/include"
 	# export BUNDLE_BUILD__FFI="--use-system-libraries"
-	# export BUNDLE_BUILD__MYSQL2="--with-mysql_config"
 	# export BUNDLE_BUILD__CHARLOCK_HOLMES="--with-icu-dir=$CACHE_DIR"
 
 	# Run bundle install.
