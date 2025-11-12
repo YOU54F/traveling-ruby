@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: windows/cache/vendor
-          key: windows-vendor-cache-${{ env.PKG_DATE }}-${{ hashFiles('shared/gemfiles/' + env.PKG_DATE + '/Gemfile.lock') }}
+          key: windows-vendor-cache-${{ env.PKG_DATE }}-${{ hashFiles(format('shared/gemfiles/{0}/Gemfile.lock', env.PKG_DATE)) }}
           restore-keys: |
             windows-vendor-cache-${{ env.PKG_DATE }}-
 
