@@ -30,10 +30,10 @@ jobs:
         id: cache-vendor
         uses: actions/cache@v4
         with:
-          path: windows/cache/vendor
-          key: windows-vendor-cache-${{ env.PKG_DATE }}-${{ hashFiles(format('shared/gemfiles/{0}/Gemfile.lock', env.PKG_DATE)) }}
-          restore-keys: |
-            windows-vendor-cache-${{ env.PKG_DATE }}-
+            path: windows/cache/vendor
+            key: windows-vendor-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-${{ hashFiles(format('shared/gemfiles/{0}/Gemfile.lock', env.PKG_DATE)) }}
+            restore-keys: |
+              windows-vendor-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows-vendor-cache-${{ env.PKG_DATE }}-
 
       - name: Cache RubyInstaller archives
         id: cache-rubyinstaller
@@ -53,7 +53,20 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           # bundler-cache: true
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
+        shell: msys2 {0}
+        if: matrix.arch == 'arm64'
+        working-directory: windows
+        run: |
+            set MSYSTEM=CLANGARM64
+            uname -m
+            mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            msys2 -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}'
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
+          ARCHITECTURES: ${{ matrix.arch }}
+      - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
         shell: bash
+        if: matrix.arch != 'arm64'
         working-directory: windows
         run: |
             uname -m
