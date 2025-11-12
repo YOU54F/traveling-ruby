@@ -26,6 +26,23 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v5
+      - name: Cache vendor gems
+        id: cache-vendor
+        uses: actions/cache@v4
+        with:
+          path: windows/cache/vendor
+          key: windows-vendor-cache-${{ env.PKG_DATE }}-${{ hashFiles('shared/gemfiles/' + env.PKG_DATE + '/Gemfile.lock') }}
+          restore-keys: |
+            windows-vendor-cache-${{ env.PKG_DATE }}-
+
+      - name: Cache RubyInstaller archives
+        id: cache-rubyinstaller
+        uses: actions/cache@v4
+        with:
+          path: windows/cache/*.7z
+          key: windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
+          restore-keys: |
+            windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
       - uses: ruby/setup-ruby-pkgs@v1
         if: runner.os == 'windows' # no bundler cache as we need to install nokogiri/sqlite3 forks first
         with:
@@ -35,13 +52,24 @@ jobs:
           # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           ruby-version: ${{ matrix.ruby-version }}
           # bundler-cache: true
-      - name: package ${{ matrix.arch }}
+      - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
         shell: bash
         working-directory: windows
         run: |
             uname -m
             mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
             ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./package.sh -E traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }} output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            touch traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}/ok
+            ./package.sh -f -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}-full.tar.gz output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
+          ARCHITECTURES: ${{ matrix.arch }}
+      - name: package ${{ matrix.arch }}
+        shell: bash
+        working-directory: windows
+        run: |
             ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}/${{ matrix.arch }}
             ./package.sh -E traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }} output/${{ matrix.ruby-version }}/${{ matrix.arch }}
             touch traveling-ruby-gems-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}/ok
