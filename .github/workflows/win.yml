@@ -43,14 +43,14 @@ jobs:
           key: windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
           restore-keys: |
             windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
-      - uses: msys2/setup-msys2@v2
-        if: matrix.arch == 'arm64'
-        with:
-          msystem: clangarm64
-          update: true
-          release: true
-          pacboy: icu:p 7zip:p
-          # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
+      # - uses: msys2/setup-msys2@v2
+      #   if: matrix.arch == 'arm64'
+      #   with:
+      #     msystem: clangarm64
+      #     update: true
+      #     release: true
+      #     pacboy: icu:p 7zip:p
+      #     # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
           
       - uses: ruby/setup-ruby-pkgs@v1
         if: runner.os == 'windows'
@@ -67,6 +67,8 @@ jobs:
         working-directory: windows
         run: |
             set MSYSTEM=CLANGARM64
+            ridk install 2 3
+            ridk enable
             msys2 -c 'uname -m'
             msys2 -c 'mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}'
             msys2 -c './build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}'

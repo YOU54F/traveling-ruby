@@ -235,10 +235,10 @@ if [[ "$GEMFILE" != "" ]]; then
 	# export BUNDLE_BUILD__FFI="--use-system-libraries"
 	# export BUNDLE_BUILD__CHARLOCK_HOLMES="--with-icu-dir=$CACHE_DIR"
 
-	# setup ridk for native gem compilation
-	header "Setting up MSYS2 for native gem compilation..."
-	run "$OUTPUT_DIR/bin/ridk" install 2 3
-	echo
+	# # setup ridk for native gem compilation
+	# header "Setting up MSYS2 for native gem compilation..."
+	# run "$OUTPUT_DIR/bin/ridk" install 2 3
+	# echo
 	# Run bundle install.
 	for GEMFILE in "${GEMFILES[@]}"; do
 		run cp "$GEMFILE" ./
