@@ -1,4 +1,4 @@
-VERSION       = File.read("../VERSION.txt").strip
+VERSION       = File.read("../versions/VERSION.txt").strip
 RUBY_VERSIONS = ENV['RUBY_VERSIONS'] ? [].push(ENV['RUBY_VERSIONS']) : File.read("../versions/RUBY_VERSIONS.txt").strip.split(/\s+/)
 ARCHITECTURES = ENV['ARCHITECTURES'] ? [].push(ENV['ARCHITECTURES']) : ["x86_64","x86"]
 
