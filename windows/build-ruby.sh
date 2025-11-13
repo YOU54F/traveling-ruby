@@ -219,14 +219,14 @@ if [[ "$GEMFILE" != "" ]]; then
 	fi
 
 	# Install Bundler, either from cache or directly.
-	if [[ -e "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" ]]; then
-		run "$OUTPUT_DIR/bin/gem" install "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" --no-document
-	else
-		run "$OUTPUT_DIR/bin/gem" install bundler -v $BUNDLER_VERSION --no-document
-		run mkdir -p "$CACHE_DIR/vendor/cache"
-		run cp "$OUTPUT_DIR"/lib/ruby/gems/$RUBY_COMPAT_VERSION/cache/bundler-$BUNDLER_VERSION.gem \
-			"$CACHE_DIR/vendor/cache/"
-	fi
+	# if [[ -e "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" ]]; then
+	# 	run "$OUTPUT_DIR/bin/gem" install "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" --no-document
+	# else
+	# 	run "$OUTPUT_DIR/bin/gem" install bundler -v $BUNDLER_VERSION --no-document
+	# 	run mkdir -p "$CACHE_DIR/vendor/cache"
+	# 	run cp "$OUTPUT_DIR"/lib/ruby/gems/$RUBY_COMPAT_VERSION/cache/bundler-$BUNDLER_VERSION.gem \
+	# 		"$CACHE_DIR/vendor/cache/"
+	# fi
 
 	# export BUNDLE_BUILD__PG="--use-system-libraries"
 	# export BUNDLE_BUILD__MYSQL2="--use-system-libraries"
@@ -235,6 +235,10 @@ if [[ "$GEMFILE" != "" ]]; then
 	# export BUNDLE_BUILD__FFI="--use-system-libraries"
 	# export BUNDLE_BUILD__CHARLOCK_HOLMES="--with-icu-dir=$CACHE_DIR"
 
+	# setup ridk for native gem compilation
+	header "Setting up MSYS2 for native gem compilation..."
+	run "$OUTPUT_DIR/bin/ridk" install 2 3
+	echo
 	# Run bundle install.
 	for GEMFILE in "${GEMFILES[@]}"; do
 		run cp "$GEMFILE" ./
