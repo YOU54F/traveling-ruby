@@ -37,6 +37,72 @@ function find_gems_containing_native_extensions()
 	[[ $? = 0 ]]
 }
 
+function package_platform_native_gems() {
+	local BUILD_OUTPUT_DIR="$1"
+	local OUTPUT_DIR="$2"
+	(
+			shopt -s nullglob
+			local GEM_BASE="$BUILD_OUTPUT_DIR/lib/ruby/gems/$RUBY_COMPAT_VERSION/gems"
+			local SPEC_BASE="$BUILD_OUTPUT_DIR/lib/ruby/gems/$RUBY_COMPAT_VERSION/specifications"
+			# local EXT_BASE="$BUILD_OUTPUT_DIR/lib/ruby/gems/$RUBY_COMPAT_VERSION/extensions/$GEM_PLATFORM/$GEM_EXTENSION_API_VERSION"
+			# local GEMS=("$EXT_BASE"/*)
+			local PACKAGED_GEMS=()
+			# # 1. Package gems with native extensions (as before)
+			# for GEM_PATH in "${GEMS[@]}"; do
+			# 	local GEM_NAME="$(basename "$GEM_PATH")"
+			# 	local MATCHED_GEM_DIRS=("$GEM_BASE/"${GEM_NAME}*"")
+			# 	local MATCHED_GEMS=()
+			# 	for DIR in "${MATCHED_GEM_DIRS[@]}"; do
+			# 		if [[ -d "$DIR" ]]; then
+			# 			MATCHED_GEMS+=("$(basename "$DIR")")
+			# 		fi
+			# 	done
+			# 	local MATCHED_SPECS=("$SPEC_BASE/"${GEM_NAME}*.gemspec"")
+			# 	mkdir -p "$OUTPUT_DIR"
+			# 	local TAR_PATH="$OUTPUT_DIR/$GEM_NAME-platform-native.tar"
+			# 	local ADDED=false
+			# 	for GEMDIR in "${MATCHED_GEMS[@]}"; do
+			# 		tar -cf "$TAR_PATH" -C "$GEM_BASE" "$GEMDIR"
+			# 		PACKAGED_GEMS+=("$GEMDIR")
+			# 		ADDED=true
+			# 	done
+			# 	for SPEC in "${MATCHED_SPECS[@]}"; do
+			# 		if [[ -f "$SPEC" ]]; then
+			# 			tar -rf "$TAR_PATH" -C "$SPEC_BASE" "$(basename "$SPEC")"
+			# 			ADDED=true
+			# 		fi
+			# 	done
+			# 	if [[ "$ADDED" == true ]]; then
+			# 		gzip --best --no-name -f "$TAR_PATH"
+			# 		echo "Packaged $GEM_NAME with native extensions as $TAR_PATH.gz"
+			# 	else
+			# 		rm -f "$TAR_PATH"
+			# 	fi
+			# done
+
+			# 2. Also package any gems in gems/ that contain .so or .dll files (native code), if not already packaged
+			for GEMDIR in "$GEM_BASE"/*; do
+				local BASENAME="$(basename "$GEMDIR")"
+				# Skip if already packaged
+				if [[ " ${PACKAGED_GEMS[@]} " =~ " $BASENAME " ]]; then
+					continue
+				fi
+				# Look for .so or .dll files anywhere under the gem dir
+				if find "$GEMDIR" -type f \( -name '*.so' -o -name '*.dll' \) | grep -q .; then
+					mkdir -p "$OUTPUT_DIR"
+					local TAR_PATH="$OUTPUT_DIR/$BASENAME.tar"
+					tar -cf "$TAR_PATH" -C "$GEM_BASE" "$BASENAME"
+					# Add gemspec if present
+					if [[ -f "$SPEC_BASE/$BASENAME.gemspec" ]]; then
+						tar -rf "$TAR_PATH" -C "$SPEC_BASE" "$BASENAME.gemspec"
+					fi
+					gzip --best --no-name -f "$TAR_PATH"
+					echo "Packaged $BASENAME (native .so/.dll) as $TAR_PATH.gz"
+				fi
+			done
+	)
+}
+
 function usage()
 {
 	echo "Usage: ./package.sh [options] <BUILD OUTPUT DIR>"
@@ -152,5 +218,7 @@ if [[ "$GEM_NATIVE_EXTENSIONS_DIR" != "" ]]; then
 			run rm -f "$GEM_NATIVE_EXTENSIONS_DIR/$GEM_NAME.tar.gz"
 			run gzip --best --no-name "$GEM_NATIVE_EXTENSIONS_DIR/$GEM_NAME.tar"
 		done
+		# Also package the full gem directories for platform-specific gems with native extensions
+		package_platform_native_gems "$BUILD_OUTPUT_DIR" "$GEM_NATIVE_EXTENSIONS_DIR"
 	fi
 fi
