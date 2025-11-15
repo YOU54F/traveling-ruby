@@ -263,14 +263,19 @@ run cp "$SELFDIR/../shared/ca-bundle.crt" lib/
 
 # find libpq.dll from the system msys2 installation used to build the pg gem
 # and copy it to to the pg gem's ports directory the ports dir wont be created so ensure the arch specific lib folder is used
+# find libpq.dll from the system msys2 installation used to build the pg gem
+# and copy it to to the pg gem's ports directory the ports dir wont be created so ensure the arch specific lib folder is used
 if [[ "$RUBY_ARCH" == "x64"* ]]; then
 	PG_DLL_PATH="/ucrt64/bin/libpq.dll"
 elif [[ "$RUBY_ARCH" == "aarch64"* ]]; then
 	PG_DLL_PATH="/clangarm64/bin/libpq.dll"
 fi
 if [[ -f "$PG_DLL_PATH" ]]; then
-	run mkdir -p "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH"
-	run cp "$PG_DLL_PATH" "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH/"
+	PG_GEM_DIR=$(find "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/" -maxdepth 1 -type d -name "pg-*" | head -n 1)
+	if [[ -n "$PG_GEM_DIR" ]]; then
+		run mkdir -p "$PG_GEM_DIR/ports/$RUBY_ARCH/lib"
+		run cp "$PG_DLL_PATH" "$PG_GEM_DIR/ports/$RUBY_ARCH/lib/"
+	fi
 fi
 if [[ "$RUBY_ARCH" == "x64"* ]]; then
 	LIBMARIADB_DLL_PATH="/ucrt64/bin/libmariadb.dll"
@@ -278,8 +283,7 @@ elif [[ "$RUBY_ARCH" == "aarch64"* ]]; then
 	LIBMARIADB_DLL_PATH="/clangarm64/bin/libmariadb.dll"
 fi
 if [[ -f "$LIBMARIADB_DLL_PATH" ]]; then
-	run mkdir -p "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/mysql2-*/vendor"
-	run cp "$LIBMARIADB_DLL_PATH" "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/mysql2-*/vendor/libmysql2.dll"
+	run cp "$LIBMARIADB_DLL_PATH" "bin.real/"
 fi
 
 run rm bin/{erb,rdoc,ri}*
