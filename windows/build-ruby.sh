@@ -261,6 +261,18 @@ pushd "$OUTPUT_DIR"
 
 run cp "$SELFDIR/../shared/ca-bundle.crt" lib/
 
+# find libpq.dll from the system msys2 installation used to build the pg gem
+# and copy it to to the pg gem's ports directory the ports dir wont be created so ensure the arch specific lib folder is used
+if [[ "$RUBY_ARCH" == *"x64"* ]]; then
+	PG_DLL_PATH="/ucrt64/bin/libpq.dll"
+elif [[ "$RUBY_ARCH" == *"aarch64"* ]]; then
+	PG_DLL_PATH="/clangarm64/bin/libpq.dll"
+fi
+if [[ -f "$PG_DLL_PATH" ]]; then
+	mkdir -p "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH"
+	cp "$PG_DLL_PATH" "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH/"
+fi
+
 run rm bin/{erb,rdoc,ri}*
 run rm -rf include
 run rm -rf share
