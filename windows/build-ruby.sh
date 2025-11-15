@@ -272,6 +272,15 @@ if [[ -f "$PG_DLL_PATH" ]]; then
 	mkdir -p "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH"
 	cp "$PG_DLL_PATH" "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH/"
 fi
+if [[ "$RUBY_ARCH" == *"x64"* ]]; then
+	PG_DLL_PATH="/ucrt64/bin/libmariadb.dll"
+elif [[ "$RUBY_ARCH" == *"aarch64"* ]]; then
+	PG_DLL_PATH="/clangarm64/bin/libmariadb.dll"
+fi
+if [[ -f "$PG_DLL_PATH" ]]; then
+	mkdir -p "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH"
+	cp "$PG_DLL_PATH" "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/pg-*/ports/$RUBY_ARCH/"
+fi
 
 run rm bin/{erb,rdoc,ri}*
 run rm -rf include
