@@ -312,7 +312,12 @@ DLLS=(
 	libssh2-1.dll
 	libunistring-5.dll
 	libzstd.dll
+	libstdc++-6.dll
 )
+
+# libstdc++-6.dll is needed for unf_ext gem on x64
+# pacman -S mingw-w64-cross-mingwarm64-gcc
+# provides /opt/lib/gcc/aarch64-w64-mingw32/15.0.1/libstdc++-6.dll
 
 if [[ "$RUBY_ARCH" == "x64"* ]]; then
 	BIN_DIR="/ucrt64/bin"
