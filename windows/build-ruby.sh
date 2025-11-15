@@ -232,8 +232,10 @@ if [[ "$GEMFILE" != "" ]]; then
 	# Run bundle install for each Gemfile.
 	for GEMFILE in "${GEMFILES[@]}"; do
 		run cp "$GEMFILE" ./
-		if [[ -e "$GEMFILE.lock" ]]; then
-			run cp "$GEMFILE.lock" ./
+		if [[ -e "$GEMFILE.lock.win" ]]; then
+			run cp "$GEMFILE.lock.win" ./Gemfile.lock
+		elif [[ -e "$GEMFILE.lock" ]]; then
+			run cp "$GEMFILE.lock" ./Gemfile.lock
 		fi
 		# "$OUTPUT_DIR/bin/bundle" config set --local system true
 

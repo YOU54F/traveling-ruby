@@ -39,7 +39,7 @@ gem 'curses', force_ruby_platform: true
 gem 'rugged', force_ruby_platform: true
 # unicorn requires charlock_holmes & kgio
 # no support on windows (no mmap /getaddrinfo) pitchfork is a maintained fork
-gem 'unicorn', force_ruby_platform: true unless Gem.win_platform?
-gem 'charlock_holmes', force_ruby_platform: true unless Gem.win_platform?
-gem 'kgio', force_ruby_platform: true unless Gem.win_platform?
-gem 'raindrops', force_ruby_platform: true unless Gem.win_platform?
+# gem 'unicorn', force_ruby_platform: true unless Gem.win_platform?
+# gem 'charlock_holmes', force_ruby_platform: true unless Gem.win_platform?
+# gem 'kgio', force_ruby_platform: true unless Gem.win_platform?
+# gem 'raindrops', force_ruby_platform: true unless Gem.win_platform?
