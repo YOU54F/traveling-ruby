@@ -142,6 +142,13 @@ for LIB in ${GEMS[@]}; do
 				continue
 			fi
 		fi
+		if [[ "$LIB" == "eventmachine" || "$LIB" == "thin" ]]; then
+			echo "Testing $LIB with em/pure_ruby required first"
+			if "$BUILD_OUTPUT_DIR/bin/ruby$EXE_SUFFIX" -rem/pure_ruby -r$LIB -e true ; then
+				success "Gem $LIB OK!"
+				continue
+			fi
+		fi
 		if [[ ! " ${GEMS_TO_FAIL[@]} " =~ " ${LIB} " ]]; then # Check if the current gem is not in the GEMS_TO_FAIL array
 			ERRORS+=("$LIB")
 		else # If the current gem is in the GEMS_TO_FAIL array, then it's OK

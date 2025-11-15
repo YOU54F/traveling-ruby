@@ -13,7 +13,7 @@ gem 'escape_utils'
 gem 'eventmachine', force_ruby_platform: true
 gem 'fast-stemmer'
 gem 'hitimes'
-gem 'pg', force_ruby_platform: true
+gem 'pg'
 gem 'puma', force_ruby_platform: true
 gem 'redcarpet'
 gem 'RedCloth'
@@ -32,7 +32,7 @@ gem 'test-unit'
 
 ## WIP - Windows ARM
 gem "sqlite3", force_ruby_platform: true
-gem 'nokogiri', force_ruby_platform: true
+gem 'nokogiri'
 gem 'pact_broker'
 
 # gem 'curses', force_ruby_platform: true
