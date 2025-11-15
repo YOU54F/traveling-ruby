@@ -219,6 +219,6 @@ if [[ "$GEM_NATIVE_EXTENSIONS_DIR" != "" ]]; then
 			run gzip --best --no-name "$GEM_NATIVE_EXTENSIONS_DIR/$GEM_NAME.tar"
 		done
 		# Also package the full gem directories for platform-specific gems with native extensions
-		package_platform_native_gems "$BUILD_OUTPUT_DIR" "$GEM_NATIVE_EXTENSIONS_DIR"
+		# package_platform_native_gems "$BUILD_OUTPUT_DIR" "$GEM_NATIVE_EXTENSIONS_DIR"
 	fi
 fi

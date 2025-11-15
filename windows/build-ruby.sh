@@ -209,7 +209,7 @@ if [[ "$GEMFILE" != "" ]]; then
 	if [[ -e "$CACHE_DIR/vendor" ]]; then
 		run cp -pR "$CACHE_DIR/vendor" vendor
 	fi
-	export BUNDLE_BUILD__PG="--use-system-libraries"
+	# export BUNDLE_BUILD__PG="--use-system-libraries"
 	# export BUNDLE_BUILD__NOKOGIRI="--use-system-libraries"
 
 	# Update RubyGems to the specified version.
