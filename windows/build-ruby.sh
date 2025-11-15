@@ -235,7 +235,8 @@ if [[ "$GEMFILE" != "" ]]; then
 		if [[ -e "$GEMFILE.lock" ]]; then
 			run cp "$GEMFILE.lock" ./
 		fi
-		"$OUTPUT_DIR/bin/bundle" config set --local system true
+		# "$OUTPUT_DIR/bin/bundle" config set --local system true
+		"$OUTPUT_DIR/bin/bundle" config set --local
 
 		# If cached gems exist, use them for installation.
 		if [[ -d "$CACHE_DIR/vendor/cache" ]] && compgen -G "$CACHE_DIR/vendor/cache/*.gem" > /dev/null; then
