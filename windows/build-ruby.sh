@@ -298,6 +298,7 @@ DLLS=(
 	libbrotlidec.dll
 	libbrotlienc.dll
 	libcurl-4.dll
+	libiconv-2.dll
 	libidn2-0.dll
 	libintl-8.dll
 	liblzma-5.dll
@@ -306,6 +307,7 @@ DLLS=(
 	libnghttp3-9.dll
 	libngtcp2-16.dll
 	libngtcp2_crypto_ossl-0.dll
+	libpq.dll
 	libpsl-5.dll
 	libssh2-1.dll
 	libunistring-5.dll
@@ -326,6 +328,12 @@ if [[ -n "$BIN_DIR" ]]; then
 			run cp "$BIN_DIR/$DLL" "bin.real/"
 		fi
 	done
+fi
+
+# create an arch specific lib folder for pg gem, despite us placing it in bin.real
+PG_GEM_DIR=$(find "lib/ruby/gems/$RUBY_COMPAT_VERSION/gems/" -maxdepth 1 -type d -name "pg-*" | head -n 1)
+if [[ -n "$PG_GEM_DIR" ]]; then
+	run mkdir -p "$PG_GEM_DIR/ports/$RUBY_ARCH/lib"
 fi
 
 echo "+ Leaving $OUTPUT_DIR"
