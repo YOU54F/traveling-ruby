@@ -243,8 +243,18 @@ if [[ "$GEMFILE" != "" ]]; then
 		if [[ -d "$CACHE_DIR/vendor/cache" ]] && compgen -G "$CACHE_DIR/vendor/cache/*.gem" > /dev/null; then
 			run mkdir -p vendor/cache
 			run cp "$CACHE_DIR/vendor/cache/"*.gem vendor/cache/
+			# If Ruby version is 3.2.*, remove mysql2 from Gemfile before bundle install
+			if [[ "$RUBY_VERSION" == 3.2.* ]]; then
+				echo "Ruby 3.2 detected, removing mysql2 from Gemfile"
+				"$OUTPUT_DIR/bin/bundle" remove mysql2 || true
+			fi
 			"$OUTPUT_DIR/bin/bundle" install --local --verbose
 		else
+			# If Ruby version is 3.2.*, remove mysql2 from Gemfile before bundle install
+			if [[ "$RUBY_VERSION" == 3.2.* ]]; then
+				echo "Ruby 3.2 detected, removing mysql2 from Gemfile"
+				"$OUTPUT_DIR/bin/bundle" remove mysql2 || true
+			fi
 			"$OUTPUT_DIR/bin/bundle" install --verbose
 		fi
 
