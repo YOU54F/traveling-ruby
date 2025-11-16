@@ -86,19 +86,29 @@ jobs:
       #   env:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
       #     ARCHITECTURES: ${{ matrix.arch }}
-      - name: install msys2 ${{ matrix.ruby-version }} ${{ matrix.arch }}
+      # - name: Setup MSYS2 (CLANGARM64)
+      #   uses: msys2/setup-msys2@v2
+      #   with:
+      #     msystem: CLANGARM64
+      #     update: true
+      #     release: true
+      #     install: >
+      #       autotools
+      #       mingw-w64-clang-aarch64-clang
+      #       ruby
+      - name: Setup RubyInstaller MSYS2 toolchain (arm64)
+        if: matrix.arch == 'arm64'
         working-directory: windows
         run: |
-            choco install -y msys2
-      - name: setup msys2 ${{ matrix.ruby-version }} ${{ matrix.arch }}
-        working-directory: windows
-        run: |
-            msys2 -clangarm64 -defterm off -no-start -c "pacman -Syu --noconfirm"
-            msys2 -clangarm64 -defterm off -no-start -c "pacman -Sy --noconfirm autotools mingw-w64-clang-aarch64-clang"
+          # Enable MSYS2 environment
+          EXTRACT_ONLY=1 mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+          ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+          ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd enable
+          # Update MSYS2 and install required build tools
+          ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -Syu --noconfirm"
+          ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -S --noconfirm make gcc mingw-w64-clang-aarch64-clang"
+
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
-        # shell: bash
-        # shell: msys2 {0}
-        # if: matrix.arch != 'arm64'
         working-directory: windows
         run: |
             uname -m
