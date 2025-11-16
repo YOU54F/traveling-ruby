@@ -179,7 +179,7 @@ if [[ -d "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH" 
 fi
 echo
 
-EXTRACT_ONLY=0
+EXTRACT_ONLY=${EXTRACT_ONLY:-0}
 
 if [[ $EXTRACT_ONLY -eq 1 ]]; then
 	header "Extract only mode, exiting."
