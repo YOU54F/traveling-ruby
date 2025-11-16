@@ -13,6 +13,9 @@ env:
 
 jobs:
   build-windows:
+    defaults:
+        run:
+          shell: msys2 {0}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -25,6 +28,16 @@ jobs:
             ruby-version: 3.4.7
       fail-fast: false
     steps:
+      - uses: msys2/setup-msys2@v2
+        if: matrix.arch == 'arm64'
+        with:
+          msystem: CLANGARM64
+          path-type: inherit
+          update: true
+          release: true
+          pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
+          # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
+          
       - uses: actions/checkout@v5
       - name: Cache vendor gems
         id: cache-vendor
@@ -43,16 +56,7 @@ jobs:
           key: windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
           restore-keys: |
             windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
-      # - uses: msys2/setup-msys2@v2
-      #   if: matrix.arch == 'arm64'
-      #   with:
-      #     msystem: CLANGARM64
-      #     path-type: inherit
-      #     update: true
-      #     release: true
-      #     pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
-      #     # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
-          
+
       # - uses: ruby/setup-ruby-pkgs@v1
       #   # if: matrix.arch != 'arm64'
       #   with:
@@ -78,7 +82,7 @@ jobs:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
       #     ARCHITECTURES: ${{ matrix.arch }}
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
-        shell: bash
+        # shell: bash
         # shell: msys2 {0}
         # if: matrix.arch != 'arm64'
         working-directory: windows
@@ -90,7 +94,7 @@ jobs:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
       - name: package ${{ matrix.arch }}
-        shell: bash
+        # shell: bash
         working-directory: windows
         run: |
             ./package.sh -r traveling-ruby-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-windows-${{ matrix.arch }}.tar.gz output/${{ matrix.ruby-version }}/${{ matrix.arch }}
@@ -101,7 +105,7 @@ jobs:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
       - name: test gems
-        shell: bash
+        # shell: bash
         working-directory: windows
         run: |
           ../shared/test-gems.sh -p windows -a ${{ matrix.arch }} output/${{ matrix.ruby-version }}/${{ matrix.arch }}
@@ -109,7 +113,7 @@ jobs:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
           ARCHITECTURES: ${{ matrix.arch }}
       - name: package gems
-        shell: bash
+        # shell: bash
         run: ./scripts/package-gems.sh    
         env:
           PLATFORM: windows
