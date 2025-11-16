@@ -217,7 +217,7 @@ if [[ "$GEMFILE" != "" ]]; then
 		header "Setting up ridk..."
 		run "$OUTPUT_DIR/bin/ridk.cmd" install 2 3
 		echo
-		run "$OUTPUT_DIR/bin/ridk.cmd" enable
+		# run "$OUTPUT_DIR/bin/ridk.cmd" enable
 	fi
 
 
