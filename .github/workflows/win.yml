@@ -93,7 +93,6 @@ jobs:
         run: |
             uname -m
             mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
-            ridk enable
             ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}
