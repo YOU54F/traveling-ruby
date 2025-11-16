@@ -7,11 +7,11 @@ SELFDIR=`cd "$SELFDIR" && pwd`
 if [ -z "$1" ]; then
     echo "Usage: $0 output/<ruby-version>-<arch> <image>"
     echo "example: $0 3.2.9-arm64"
-    echo "image: node:20-slim"
-    echo "image is optional|default: node:20-slim"
+    echo "image: debian:12-slim"
+    echo "image is optional|default: debian:12-slim"
     exit 1
 fi
-IMAGE=${2:-"node:20-slim"}
+IMAGE=${2:-"debian:12-slim"}
 if ! command -v docker &> /dev/null
 then
         echo "Error: docker could not be found"
