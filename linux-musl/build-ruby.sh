@@ -6,7 +6,7 @@ SELFDIR=`cd "$SELFDIR" && pwd`
 source "$SELFDIR/../shared/library.sh"
 
 CPUCOUNT=`"$SELFDIR/internal/cpucount.sh"`
-RUBY_VERSIONS=(`cat "$SELFDIR/../versions/versions/RUBY_VERSIONS.txt"`)
+RUBY_VERSIONS=(`cat "$SELFDIR/../versions/RUBY_VERSIONS.txt"`)
 
 OUTPUT_DIR=
 IMAGE=
