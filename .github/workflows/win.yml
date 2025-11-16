@@ -86,16 +86,16 @@ jobs:
       #   env:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
       #     ARCHITECTURES: ${{ matrix.arch }}
-      # - name: Setup MSYS2 (CLANGARM64)
-      #   uses: msys2/setup-msys2@v2
-      #   with:
-      #     msystem: CLANGARM64
-      #     update: true
-      #     release: true
-      #     install: >
-      #       autotools
-      #       mingw-w64-clang-aarch64-clang
-      #       ruby
+      - name: Setup MSYS2 (CLANGARM64)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: CLANGARM64
+          update: true
+          release: true
+          install: >
+            autotools
+            mingw-w64-clang-aarch64-clang
+            ruby
       - name: Setup RubyInstaller MSYS2 toolchain (arm64)
         if: matrix.arch == 'arm64'
         working-directory: windows
