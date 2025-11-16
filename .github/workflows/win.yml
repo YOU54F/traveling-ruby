@@ -29,13 +29,17 @@ jobs:
       fail-fast: false
     steps:
       - uses: msys2/setup-msys2@v2
-        if: matrix.arch == 'arm64'
+        # if: matrix.arch == 'arm64'
         with:
           msystem: CLANGARM64
           path-type: inherit
           update: true
           release: true
-          pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
+          install: >
+            autotools
+            mingw-w64-clang-aarch64-clang
+          # pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
+          # pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
           # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
           
       - uses: actions/checkout@v5
@@ -89,6 +93,7 @@ jobs:
         run: |
             uname -m
             mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ridk enable
             ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
         env:
           RUBY_VERSIONS: ${{ matrix.ruby-version }}

@@ -222,21 +222,21 @@ if [[ "$GEMFILE" != "" ]]; then
 
 
 	# Update RubyGems to the specified version.
-	header "Updating RubyGems..."
-	if "$OUTPUT_DIR/bin/gem" --version | grep -q $RUBYGEMS_VERSION; then
-		echo "RubyGems is up to date."
-	else
-		echo "RubyGems is out of date, updating..."
-		run "$OUTPUT_DIR/bin/gem" update --system $RUBYGEMS_VERSION --no-document
-		run "$OUTPUT_DIR/bin/gem" uninstall -aIx rubygems-update
-	fi
+	# header "Updating RubyGems..."
+	# if "$OUTPUT_DIR/bin/gem" --version | grep -q $RUBYGEMS_VERSION; then
+	# 	echo "RubyGems is up to date."
+	# else
+	# 	echo "RubyGems is out of date, updating..."
+	# 	run "$OUTPUT_DIR/bin/gem" update --system $RUBYGEMS_VERSION --no-document
+	# 	run "$OUTPUT_DIR/bin/gem" uninstall -aIx rubygems-update
+	# fi
 
-	# Install Bundler, either from cache or directly.
-	if [[ -e "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" ]]; then
-		run "$OUTPUT_DIR/bin/gem" install "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" --no-document
-	else
-		run "$OUTPUT_DIR/bin/gem" install bundler -v $BUNDLER_VERSION --no-document
-	fi
+	# # Install Bundler, either from cache or directly.
+	# if [[ -e "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" ]]; then
+	# 	run "$OUTPUT_DIR/bin/gem" install "$CACHE_DIR/vendor/cache/bundler-$BUNDLER_VERSION.gem" --no-document
+	# else
+	# 	run "$OUTPUT_DIR/bin/gem" install bundler -v $BUNDLER_VERSION --no-document
+	# fi
 
 	# Run bundle install for each Gemfile.
 	for GEMFILE in "${GEMFILES[@]}"; do
