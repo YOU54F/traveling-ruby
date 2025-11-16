@@ -91,13 +91,12 @@ jobs:
         # shell: msys2 {0}
         # if: matrix.arch != 'arm64'
         working-directory: windows
-        env:
-          EXTRACT_ONLY: 1
+        # env:
+        #   EXTRACT_ONLY: 1
         run: |
-            uname -m
-            mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
-            ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
-            ./setup-runtime.sh output/${{ matrix.ruby-version }}/${{ matrix.arch }} ${{ matrix.arch }}
+            choco install -y msys2
+            msys2 -clangarm64 -defterm off -no-start -c "pacman -Syu --noconfirm"
+            msys2 -clangarm64 -defterm off -no-start -c "pacman -Sy --noconfirm autotools mingw-w64-clang-aarch64-clang"
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
         # shell: bash
         # shell: msys2 {0}
