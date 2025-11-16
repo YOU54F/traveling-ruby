@@ -152,27 +152,39 @@ echo
 
 
 header "Extracting Ruby..."
-(
-	shopt -s dotglob
-	run rm -rf "$OUTPUT_DIR"/*
-	echo "+ In $OUTPUT_DIR:"
-	cd "$OUTPUT_DIR"
-	echo "+ 7z x $CACHE_DIR/$RUBY_FILE"
-	if command -v 7zz >/dev/null 2>&1; then
-		7zz x "$CACHE_DIR/$RUBY_FILE" >/dev/null
-	else
-		echo "no 7zz found, trying 7z"
-		echo "tip: on mac brew install 7zip"
-		7z x "$CACHE_DIR/$RUBY_FILE" >/dev/null
+if [[ -d "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH" && $(ls -A "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH" 2>/dev/null) ]]; then
+	echo "Ruby already extracted. Skipping extraction."
+else
+	(
+		shopt -s dotglob
+		run rm -rf "$OUTPUT_DIR"/*
+		echo "+ In $OUTPUT_DIR:"
+		cd "$OUTPUT_DIR"
+		echo "+ 7z x $CACHE_DIR/$RUBY_FILE"
+		if command -v 7zz >/dev/null 2>&1; then
+			7zz x "$CACHE_DIR/$RUBY_FILE" >/dev/null
+		else
+			echo "no 7zz found, trying 7z"
+			echo "tip: on mac brew install 7zip"
+			7z x "$CACHE_DIR/$RUBY_FILE" >/dev/null
+		fi
+	)
+	if [[ $? != 0 ]]; then
+		exit 1
 	fi
-)
-if [[ $? != 0 ]]; then
-	exit 1
 fi
-run mv "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH"/* "$OUTPUT_DIR/"
-run rm -rf "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH"
+if [[ -d "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH" ]]; then
+	run mv "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH"/* "$OUTPUT_DIR/"
+	run rm -rf "$OUTPUT_DIR/rubyinstaller-$RUBY_VERSION-$RELEASE_NUM-$RUBY_FILE_ARCH"
+fi
 echo
 
+EXTRACT_ONLY=0
+
+if [[ $EXTRACT_ONLY -eq 1 ]]; then
+	header "Extract only mode, exiting."
+	exit 0
+fi
 
 header "Analyzing Ruby..."
 if [[ "$OS" =~ Windows ]]; then

@@ -15,7 +15,8 @@ jobs:
   build-windows:
     defaults:
         run:
-          shell: msys2 {0}
+          shell: bash
+          # shell: msys2 {0}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -28,16 +29,16 @@ jobs:
             ruby-version: 3.4.7
       fail-fast: false
     steps:
-      - uses: msys2/setup-msys2@v2
-        # if: matrix.arch == 'arm64'
-        with:
-          msystem: CLANGARM64
-          path-type: inherit
-          update: true
-          release: true
-          install: >
-            autotools
-            mingw-w64-clang-aarch64-clang
+      # - uses: msys2/setup-msys2@v2
+      #   # if: matrix.arch == 'arm64'
+      #   with:
+      #     msystem: CLANGARM64
+      #     path-type: inherit
+      #     update: true
+      #     release: true
+      #     install: >
+      #       autotools
+      #       mingw-w64-clang-aarch64-clang
           # pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
           # pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
           # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
@@ -85,6 +86,18 @@ jobs:
       #   env:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
       #     ARCHITECTURES: ${{ matrix.arch }}
+      - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
+        # shell: bash
+        # shell: msys2 {0}
+        # if: matrix.arch != 'arm64'
+        working-directory: windows
+        env:
+          EXTRACT_ONLY: 1
+        run: |
+            uname -m
+            mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+            ./setup-runtime.sh output/${{ matrix.ruby-version }}/${{ matrix.arch }} ${{ matrix.arch }}
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
         # shell: bash
         # shell: msys2 {0}
