@@ -26,6 +26,6 @@ echo "RUBY_VERSION: $RUBY_VERSION"
 # ## override for docker platform
 [ "$ARCH" == "x86_64" ] && ARCH="amd64"
 
-echo docker run --platform linux/"${ARCH}" --rm --entrypoint /bin/sh -v $SELFDIR/..:/home "${IMAGE}" -c "apk add bash && ./home/shared/test-gems.sh home/alpine/"$@"";
+echo docker run --platform linux/"${ARCH}" --rm --entrypoint /bin/sh -v $SELFDIR/..:/home "${IMAGE}" -c "apk add bash && ./home/shared/test-gems.sh home/linux-musl/"$@"";
 
-docker run --platform linux/"${ARCH}" --rm --entrypoint /bin/sh -v $SELFDIR/..:/home "${IMAGE}" -c "apk add bash && ./home/shared/test-gems.sh home/alpine/"$@"";
+docker run --platform linux/"${ARCH}" --rm --entrypoint /bin/sh -v $SELFDIR/..:/home "${IMAGE}" -c "apk add bash && ./home/shared/test-gems.sh home/linux-musl/"$@"";
