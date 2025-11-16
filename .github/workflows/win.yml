@@ -16,13 +16,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        arch: [x86_64]
-        ruby-version: [3.2.9, 3.3.10, 3.4.7]
-        os: [windows-latest]
-        # include:
-        #   - os: windows-11-arm
-        #     arch: arm64
-        #     ruby-version: 3.4.7
+        # arch: [x86_64]
+        # ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        # os: [windows-latest]
+        include:
+          - os: windows-11-arm
+            arch: arm64
+            ruby-version: 3.4.7
       fail-fast: false
     steps:
       - uses: actions/checkout@v5
@@ -57,28 +57,28 @@ jobs:
         with:
           # working-directory: shared/gemfiles/${{ env.PKG_DATE }}
           # msys2: icu-devel
-          mingw:             icu 7zip gcc pkg-config sqlite3 libxml2 libxslt libiconv libmariadbclient libpqxx xz gcc-libs
+          mingw:             icu 7zip gcc pkg-config sqlite3 libxml2 libxslt libiconv libmariadbclient libpqxx xz gcc-libs gcc
           # mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           ruby-version: ${{ matrix.ruby-version }}
           # bundler-cache: true
-      - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
-        # shell: msys2 {0}
-        if: matrix.arch == 'arm64'
-        working-directory: windows
-        run: |
-            set MSYSTEM=CLANGARM64
-            ridk install 2 3
-            ridk enable
-            uname -m
-            ridk exec sh -c "mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}"
-            ridk exec sh -c "./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}"
-        env:
-          RUBY_VERSIONS: ${{ matrix.ruby-version }}
-          ARCHITECTURES: ${{ matrix.arch }}
+      # - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
+      #   # shell: msys2 {0}
+      #   if: matrix.arch == 'arm64'
+      #   working-directory: windows
+      #   run: |
+      #       set MSYSTEM=CLANGARM64
+      #       ridk install 2 3
+      #       ridk enable
+      #       uname -m
+      #       ridk exec sh -c "mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}"
+      #       ridk exec sh -c "./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}"
+      #   env:
+      #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
+      #     ARCHITECTURES: ${{ matrix.arch }}
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
         shell: bash
-        if: matrix.arch != 'arm64'
+        # if: matrix.arch != 'arm64'
         working-directory: windows
         run: |
             uname -m
@@ -133,13 +133,13 @@ jobs:
     needs: build-windows
     strategy:
       matrix:
-        arch: [x86_64]
-        ruby-version: [3.2.9, 3.3.10, 3.4.7]
-        os: [windows-latest]
-        # include:
-        #   - os: windows-11-arm
-        #     arch: arm64
-        #     ruby-version: 3.4.7
+        # arch: [x86_64]
+        # ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        # os: [windows-latest]
+        include:
+          - os: windows-11-arm
+            arch: arm64
+            ruby-version: 3.4.7
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -163,13 +163,13 @@ jobs:
     needs: build-windows
     strategy:
       matrix:
-        arch: [x86_64]
-        ruby-version: [3.4.7]
-        os: [windows-latest]
-        # include:
-        #   - os: windows-11-arm
-        #     arch: arm64
-        #     ruby-version: 3.4.7
+        # arch: [x86_64]
+        # ruby-version: [3.4.7]
+        # os: [windows-latest]
+        include:
+          - os: windows-11-arm
+            arch: arm64
+            ruby-version: 3.4.7
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
