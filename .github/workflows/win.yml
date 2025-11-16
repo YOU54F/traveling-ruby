@@ -101,8 +101,8 @@ jobs:
         working-directory: windows
         run: |
           # Enable MSYS2 environment
-          EXTRACT_ONLY=1 mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
-          ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+          mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+          EXTRACT_ONLY=1 ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
           ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd enable
           # Update MSYS2 and install required build tools
           ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -Syu --noconfirm"
