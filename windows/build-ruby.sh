@@ -212,6 +212,15 @@ if [[ "$GEMFILE" != "" ]]; then
 	# export BUNDLE_BUILD__PG="--use-system-libraries"
 	# export BUNDLE_BUILD__NOKOGIRI="--use-system-libraries"
 
+	# setup ridk on arm64
+	if [[ "$ARCHITECTURE" == "arm64" ]]; then
+		header "Setting up ridk..."
+		run "$OUTPUT_DIR/bin/ridk" install 2 3
+		echo
+		run "$OUTPUT_DIR/bin/ridk" enable
+	fi
+
+
 	# Update RubyGems to the specified version.
 	header "Updating RubyGems..."
 	if "$OUTPUT_DIR/bin/gem" --version | grep -q $RUBYGEMS_VERSION; then
