@@ -25,10 +25,10 @@ fi
 if [[ "$ARCHITECTURE" == "arm64" ]]; then
   echo "Setting up MSYS2 environment with ridk for arm64..."
   "$RIDK_CMD" install 2 3
-  "$RIDK_CMD" enable
-  "$RIDK_CMD" exec sh -c "pacman -Suy --noconfirm"
-  "$RIDK_CMD" exec sh -c "pacman -S --noconfirm mingw-w64-clang-aarch64-clang"
-  echo "ridk and clang setup complete."
+  # "$RIDK_CMD" enable
+  # "$RIDK_CMD" exec sh -c "pacman -Suy --noconfirm"
+  # "$RIDK_CMD" exec sh -c "pacman -S --noconfirm mingw-w64-clang-aarch64-clang"
+  # echo "ridk and clang setup complete."
 else
   echo "No additional runtime setup required for architecture: $ARCHITECTURE"
 fi
