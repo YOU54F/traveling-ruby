@@ -20,13 +20,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # arch: [x86_64]
-        # ruby-version: [3.2.9, 3.3.10, 3.4.7]
-        # os: [windows-latest]
-        include:
-          - os: windows-11-arm
-            arch: arm64
-            ruby-version: 3.4.7
+        arch: [x86_64]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        os: [windows-latest]
+        # include:
+        #   - os: windows-11-arm
+        #     arch: arm64
+        #     ruby-version: 3.4.7
       fail-fast: false
     steps:
       # - uses: msys2/setup-msys2@v2
@@ -62,16 +62,16 @@ jobs:
           restore-keys: |
             windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
 
-      # - uses: ruby/setup-ruby-pkgs@v1
-      #   # if: matrix.arch != 'arm64'
-      #   with:
-      #     # working-directory: shared/gemfiles/${{ env.PKG_DATE }}
-      #     # msys2: icu-devel
-      #     mingw:             icu 7zip gcc pkg-config sqlite3 libxml2 libxslt libiconv libmariadbclient libpqxx xz gcc-libs gcc
-      #     # mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
-      #     # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
-      #     ruby-version: ${{ matrix.ruby-version }}
-          # bundler-cache: true
+      - uses: ruby/setup-ruby-pkgs@v1
+        # if: matrix.arch != 'arm64'
+        with:
+          # working-directory: shared/gemfiles/${{ env.PKG_DATE }}
+          # msys2: icu-devel
+          mingw:             icu 7zip gcc pkg-config sqlite3 libxml2 libxslt libiconv libmariadbclient libpqxx xz gcc-libs gcc
+          # mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
+          # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
       # - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
       #   # shell: msys2 {0}
       #   if: matrix.arch == 'arm64'
@@ -86,27 +86,27 @@ jobs:
       #   env:
       #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
       #     ARCHITECTURES: ${{ matrix.arch }}
-      - name: Setup MSYS2 (CLANGARM64)
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: CLANGARM64
-          update: true
-          release: true
-          install: >
-            autotools
-            mingw-w64-clang-aarch64-clang
-            ruby
-      - name: Setup RubyInstaller MSYS2 toolchain (arm64)
-        if: matrix.arch == 'arm64'
-        working-directory: windows
-        run: |
-          # Enable MSYS2 environment
-          mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
-          EXTRACT_ONLY=1 ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
-          ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd enable
-          # Update MSYS2 and install required build tools
-          ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -Syu --noconfirm"
-          ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -S --noconfirm make gcc mingw-w64-clang-aarch64-clang"
+      # - name: Setup MSYS2 (CLANGARM64)
+      #   uses: msys2/setup-msys2@v2
+      #   with:
+      #     msystem: CLANGARM64
+      #     update: true
+      #     release: true
+      #     install: >
+      #       autotools
+      #       mingw-w64-clang-aarch64-clang
+      #       ruby
+      # - name: Setup RubyInstaller MSYS2 toolchain (arm64)
+      #   if: matrix.arch == 'arm64'
+      #   working-directory: windows
+      #   run: |
+      #     # Enable MSYS2 environment
+      #     mkdir -p cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+      #     EXTRACT_ONLY=1 ./build-ruby.sh -a ${{ matrix.arch }} -r ${{ matrix.ruby-version }} cache output/${{ matrix.ruby-version }}/${{ matrix.arch }}
+      #     ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd enable
+      #     # Update MSYS2 and install required build tools
+      #     ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -Syu --noconfirm"
+      #     ./output/${{ matrix.ruby-version }}/${{ matrix.arch }}/bin/ridk.cmd exec sh -c "pacman -S --noconfirm make gcc mingw-w64-clang-aarch64-clang"
 
       - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
         working-directory: windows
@@ -163,9 +163,9 @@ jobs:
     needs: build-windows
     strategy:
       matrix:
-        # arch: [x86_64]
-        # ruby-version: [3.2.9, 3.3.10, 3.4.7]
-        # os: [windows-latest]
+        arch: [x86_64]
+        ruby-version: [3.2.9, 3.3.10, 3.4.7]
+        os: [windows-latest]
         include:
           - os: windows-11-arm
             arch: arm64
@@ -193,13 +193,13 @@ jobs:
     needs: build-windows
     strategy:
       matrix:
-        # arch: [x86_64]
-        # ruby-version: [3.4.7]
-        # os: [windows-latest]
-        include:
-          - os: windows-11-arm
-            arch: arm64
-            ruby-version: 3.4.7
+        arch: [x86_64]
+        ruby-version: [3.4.7]
+        os: [windows-latest]
+        # include:
+        #   - os: windows-11-arm
+        #     arch: arm64
+        #     ruby-version: 3.4.7
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
