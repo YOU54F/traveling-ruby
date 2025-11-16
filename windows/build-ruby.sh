@@ -215,9 +215,9 @@ if [[ "$GEMFILE" != "" ]]; then
 	# setup ridk on arm64
 	if [[ "$ARCHITECTURE" == "arm64" ]]; then
 		header "Setting up ridk..."
-		run "$OUTPUT_DIR/bin/ridk" install 2 3
+		run "$OUTPUT_DIR/bin/ridk.cmd" install 2 3
 		echo
-		run "$OUTPUT_DIR/bin/ridk" enable
+		run "$OUTPUT_DIR/bin/ridk.cmd" enable
 	fi
 
 

@@ -53,15 +53,15 @@ jobs:
       #     pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
       #     # pacboy: icu:p 7zip:p ccache:p cmake:p libtool:p openssl:p ncurses:p gmp:p libffi:p libyaml:p sqlite:p xz:p libmariadbclient:p libpqxx:p libssh2:p libxml2:p libxslt:p clang:p cc:p autotools:p doxygen:p graphviz:p gcc-libs:p gdbm:p libyaml:p libffi:p pdcurses:p openssl:p gmp:p tk:p
           
-      - uses: ruby/setup-ruby-pkgs@v1
-        # if: matrix.arch != 'arm64'
-        with:
-          # working-directory: shared/gemfiles/${{ env.PKG_DATE }}
-          # msys2: icu-devel
-          mingw:             icu 7zip gcc pkg-config sqlite3 libxml2 libxslt libiconv libmariadbclient libpqxx xz gcc-libs gcc
-          # mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
-          # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
-          ruby-version: ${{ matrix.ruby-version }}
+      # - uses: ruby/setup-ruby-pkgs@v1
+      #   # if: matrix.arch != 'arm64'
+      #   with:
+      #     # working-directory: shared/gemfiles/${{ env.PKG_DATE }}
+      #     # msys2: icu-devel
+      #     mingw:             icu 7zip gcc pkg-config sqlite3 libxml2 libxslt libiconv libmariadbclient libpqxx xz gcc-libs gcc
+      #     # mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
+      #     # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
+      #     ruby-version: ${{ matrix.ruby-version }}
           # bundler-cache: true
       # - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
       #   # shell: msys2 {0}
