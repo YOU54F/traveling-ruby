@@ -47,6 +47,7 @@ jobs:
         if: matrix.arch == 'arm64'
         with:
           msystem: CLANGARM64
+          path-type: inherit
           update: true
           release: true
           pacboy: icu:p 7zip:p gcc:p pkg-config:p sqlite3:p libxml2:p libxslt:p libiconv:p libmariadbclient:p libpqxx:p xz:p gcc-libs:p
