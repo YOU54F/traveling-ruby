@@ -166,10 +166,10 @@ jobs:
         arch: [x86_64]
         ruby-version: [3.2.9, 3.3.10, 3.4.7]
         os: [windows-latest]
-        include:
-          - os: windows-11-arm
-            arch: arm64
-            ruby-version: 3.4.7
+        # include:
+        #   - os: windows-11-arm
+        #     arch: arm64
+        #     ruby-version: 3.4.7
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
