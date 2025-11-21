@@ -70,6 +70,15 @@ jobs:
           echo "Verifying runtime exists..."
           ls -la macos/runtime/ || echo "Runtime directory not found"
 
+      - name: package macos arm64 runtime
+        run: ./scripts/package-macos-runtime.sh     
+
+      - name: 'Upload Runtime - macos arm64'
+        uses: actions/upload-artifact@v5
+        with:
+          name: macos-runtime-arm64-gha.tar.gz
+          path: macos/macos-runtime-*.tar.gz
+
   make-macos-arm64:
     needs: package-runtime
     strategy:
@@ -82,17 +91,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - name: Restore runtime cache
-        uses: actions/cache@v4
-        with:
-          path: macos/runtime/
-          key: ${{ needs.package-runtime.outputs.cache-key }}
-          fail-on-cache-miss: true
+      # - name: Restore runtime cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: macos/runtime/
+      #     key: ${{ needs.package-runtime.outputs.cache-key }}
+      #     fail-on-cache-miss: true
       
-      # - name: download macos arm64 runtime
-      #   run: ./scripts/download-macos-runtime.sh     
-      #   env:
-      #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
+      - name: download macos arm64 runtime
+        run: ./scripts/download-macos-runtime.sh     
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
    
       - name: build arm64
         run: |
