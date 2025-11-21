@@ -10,7 +10,7 @@ on:
     types: [published]
 
 env:
-  PKG_DATE: experimental
+  PKG_DATE: 20251111
 
 jobs:
   make-linux-musl-arm64:
