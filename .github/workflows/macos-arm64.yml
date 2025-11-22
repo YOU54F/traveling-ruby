@@ -77,13 +77,26 @@ jobs:
           name: macos-runtime-arm64-gha.tar.gz
           path: macos/macos-runtime-*.tar.gz
 
+  setup-ruby-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.set-versions.outputs.ruby_versions }}
+    steps:
+      - name: Set Ruby versions
+        id: set-versions
+        run: |
+          if [[ "${GITHUB_REF}" == *preview* || "${GITHUB_HEAD_REF}" == *preview* || "${GITHUB_REF_NAME}" == *preview* ]]; then
+            echo "ruby_versions=['3.5.0-preview1','4.0.0-preview2']" >> $GITHUB_OUTPUT
+          else
+            echo "ruby_versions=['3.2.9','3.3.10','3.4.7']" >> $GITHUB_OUTPUT
+          fi
+
   make-macos-arm64:
-    needs: package-runtime
+    needs: [  package-runtime, setup-ruby-versions ]
     strategy:
       matrix:
         os: [macos-15]
-        # ruby-version: [3.0.7] # Pre 3.1.0 builds with openssl 1.1.1
-        ruby-version: [3.2.9, 3.3.10, 3.4.7, 3.5.0-preview1, 4.0.0-preview2]
+        ruby-version: ${{ fromJson(needs.setup-ruby-versions.outputs.versions) }}
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
