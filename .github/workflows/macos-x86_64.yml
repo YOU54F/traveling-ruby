@@ -29,32 +29,28 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - name: Generate cache key
-        id: cache-key
-        run: |
-          # Create cache key based on relevant files and inputs
-          HASH=$(find macos/setup-runtime.sh macos/internal/ -type f -exec shasum {} \; | shasum | cut -d' ' -f1)
-          CLEAR_CACHE="${{ github.event.inputs.clear_cache }}"
-          if [ "$CLEAR_CACHE" = "true" ]; then
-            HASH="${HASH}-cleared-$(date +%s)"
-          fi
-          echo "key=macos-x86_64-runtime-${HASH}" >> $GITHUB_OUTPUT
-          echo "Runtime cache key: macos-x86_64-runtime-${HASH}"
+      # - name: Generate cache key
+      #   id: cache-key
+      #   run: |
+      #     # Create cache key based on relevant files and inputs
+      #     HASH=$(find macos/setup-runtime.sh macos/internal/ -type f -exec shasum {} \; | shasum | cut -d' ' -f1)
+      #     CLEAR_CACHE="${{ github.event.inputs.clear_cache }}"
+      #     if [ "$CLEAR_CACHE" = "true" ]; then
+      #       HASH="${HASH}-cleared-$(date +%s)"
+      #     fi
+      #     echo "key=macos-x86_64-runtime-${HASH}" >> $GITHUB_OUTPUT
+      #     echo "Runtime cache key: macos-x86_64-runtime-${HASH}"
       
-      - name: Clear cache if requested
-        if: github.event.inputs.clear_cache == 'true'
-        run: |
-          echo "Cache clear requested - will create new runtime"
-      
-      - name: Restore runtime cache
-        id: cache-runtime
-        uses: actions/cache@v4
-        with:
-          path: macos/runtime/
-          key: ${{ steps.cache-key.outputs.key }}
+
+      # - name: Restore runtime cache
+      #   id: cache-runtime
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: macos/runtime/
+      #     key: ${{ steps.cache-key.outputs.key }}
       
       - name: Build runtime
-        if: steps.cache-runtime.outputs.cache-hit != 'true'
+        if: github.event.inputs.clear_cache == 'true'
         run: |
           echo "Building new runtime..."
           ls /Applications/Xcode*
@@ -70,6 +66,17 @@ jobs:
           echo "Verifying runtime exists..."
           ls -la macos/runtime/ || echo "Runtime directory not found"
 
+      - name: package macos x86_64 runtime
+        if: github.event.inputs.clear_cache == 'true'
+        run: ./scripts/package-macos-runtime.sh     
+
+      - name: 'Upload Runtime - macos x86_64'
+        if: github.event.inputs.clear_cache == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: macos-runtime-x86_64-gha.tar.gz
+          path: macos/macos-runtime-*.tar.gz
+
   make-macos-x86_64:
     needs: package-runtime
     strategy:
@@ -82,17 +89,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - name: Restore runtime cache
-        uses: actions/cache@v4
-        with:
-          path: macos/runtime/
-          key: ${{ needs.package-runtime.outputs.cache-key }}
-          fail-on-cache-miss: true
+      # - name: Restore runtime cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: macos/runtime/
+      #     key: ${{ needs.package-runtime.outputs.cache-key }}
+      #     fail-on-cache-miss: true
       
-      # - name: download macos x86_64 runtime
-      #   run: ./scripts/download-macos-runtime.sh
-      #   env:
-      #     RUBY_VERSIONS: ${{ matrix.ruby-version }}
+      - name: download macos x86_64 runtime
+        run: ./scripts/download-macos-runtime.sh
+        env:
+          RUBY_VERSIONS: ${{ matrix.ruby-version }}
 
       - name: build x86_64
         run: |

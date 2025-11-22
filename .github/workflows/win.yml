@@ -50,8 +50,8 @@ jobs:
         with:
             path: windows/cache/vendor
             key: windows-vendor-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-${{ hashFiles(format('shared/gemfiles/{0}/Gemfile.lock', env.PKG_DATE)) }}
-            restore-keys: |
-              windows-vendor-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows-vendor-cache-${{ env.PKG_DATE }}-
+            # restore-keys: |
+            #   windows-vendor-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}-windows-vendor-cache-${{ env.PKG_DATE }}-
 
       - name: Cache RubyInstaller archives
         id: cache-rubyinstaller
@@ -59,8 +59,8 @@ jobs:
         with:
           path: windows/cache/*.7z
           key: windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
-          restore-keys: |
-            windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
+          # restore-keys: |
+          #   windows-rubyinstaller-cache-${{ env.PKG_DATE }}-${{ matrix.ruby-version }}-${{ matrix.arch }}
 
       - uses: ruby/setup-ruby-pkgs@v1
         # if: matrix.arch != 'arm64'
@@ -71,7 +71,7 @@ jobs:
           # mingw:             ccache cmake libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           # mingw:             ccache cmake pkg-config libtool openssl ncurses gmp libffi libyaml sqlite xz libmariadbclient libpqxx icu libssh2 libxml2 libxslt clang cc autotools doxygen graphviz gcc-libs gdbm libyaml libffi pdcurses openssl gmp tk
           ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true
+          # bundler-cache: true
       # - name: build ruby ${{ matrix.ruby-version }} ${{ matrix.arch }}
       #   # shell: msys2 {0}
       #   if: matrix.arch == 'arm64'
