@@ -10,7 +10,7 @@ on:
     types: [published]
 
 env:
-  PKG_DATE: 20251111
+  PKG_DATE: 20251122
 
 jobs:
   make-linux-musl-x86_64:
