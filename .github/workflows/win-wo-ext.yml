@@ -1,12 +1,12 @@
 name: Windows-via-unix
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  release:
-    types: [published]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+  # release:
+  #   types: [published]
 
 env:
   PKG_DATE: 20260608
